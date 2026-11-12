@@ -1,0 +1,336 @@
+<!-- ============================================================
+     CHAT.HTML — Live Chat Support (Socket.io ready)
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Live Chat | Vertex Talent — 24/7 Support</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #0F2B46; --primary-dark: #081C2F; --primary-soft: #244B6B;
+            --secondary: #00A6A6; --secondary-glow: #2DD4BF; --accent: #FF7B54;
+            --gold: #FFC857; --dark: #0A1A2B; --gray: #4F6F8F; --white: #FFFFFF;
+            --danger: #ef4444; --success: #10b981; --whatsapp: #25D366;
+            --shadow-soft: 0 20px 35px -12px rgba(0,0,0,0.06);
+            --shadow-bold: 0 28px 45px -12px rgba(0,0,0,0.18);
+        }
+        body { font-family: 'Inter', sans-serif; background: #F7FAFF; color: var(--dark); line-height: 1.5; height: 100vh; overflow: hidden; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 28px; }
+
+        .dash-header { background: rgba(255,255,255,0.95); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,166,166,0.15); padding: 12px 0; flex-shrink: 0; }
+        .dash-header .container { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .dash-logo h1 { font-size: 20px; font-weight: 800; background: linear-gradient(125deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; display: flex; align-items: center; gap: 8px; }
+        .dash-logo span { font-size: 10px; color: var(--gray); font-weight: 500; display: block; }
+        .header-links { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .header-links a { text-decoration: none; color: var(--gray); font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 50px; transition: 0.2s; }
+        .header-links a:hover, .header-links a.active { background: var(--secondary); color: white; }
+        .online-status { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--success); font-weight: 600; padding: 6px 14px; background: rgba(16,185,129,0.1); border-radius: 50px; }
+        .online-status::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--success); animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        .chat-layout { display: flex; height: calc(100vh - 65px); max-width: 1400px; margin: 0 auto; }
+        .chat-sidebar { width: 320px; background: white; border-right: 1px solid #e8eef5; display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar-head { padding: 20px; border-bottom: 1px solid #e8eef5; }
+        .sidebar-head h3 { font-size: 16px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+        .sidebar-head p { font-size: 12.5px; color: var(--gray); }
+        .conversations { flex: 1; overflow-y: auto; padding: 12px; }
+        .conv-item { display: flex; gap: 12px; padding: 14px; border-radius: 14px; cursor: pointer; transition: 0.2s; text-decoration: none; color: inherit; }
+        .conv-item:hover, .conv-item.active { background: #F7FAFF; }
+        .conv-item img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+        .conv-avatar-fallback { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 16px; flex-shrink: 0; }
+        .conv-info { flex: 1; min-width: 0; }
+        .conv-info strong { font-size: 13.5px; color: var(--primary); display: block; margin-bottom: 2px; }
+        .conv-info span { font-size: 12px; color: var(--gray); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+        .conv-meta { text-align: right; flex-shrink: 0; }
+        .conv-meta .time { font-size: 11px; color: #94a3b8; }
+        .conv-meta .unread { display: inline-block; margin-top: 4px; background: var(--accent); color: white; font-size: 10px; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; line-height: 18px; text-align: center; }
+
+        .chat-main { flex: 1; display: flex; flex-direction: column; background: #FBFDFF; min-width: 0; }
+        .chat-head { padding: 16px 24px; background: white; border-bottom: 1px solid #e8eef5; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+        .chat-head .agent-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--secondary), var(--primary)); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
+        .chat-head .agent-info strong { font-size: 15px; color: var(--primary); display: block; }
+        .chat-head .agent-info span { font-size: 12px; color: var(--success); font-weight: 600; }
+        .chat-head .head-actions { margin-left: auto; display: flex; gap: 8px; }
+        .chat-head .head-actions a { width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid #e2e8f0; background: white; display: flex; align-items: center; justify-content: center; color: var(--gray); text-decoration: none; transition: 0.2s; font-size: 14px; }
+        .chat-head .head-actions a:hover { border-color: var(--secondary); color: var(--secondary); }
+
+        .chat-messages { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+        .msg-row { display: flex; gap: 10px; align-items: flex-end; max-width: 75%; }
+        .msg-row.sent { align-self: flex-end; flex-direction: row-reverse; }
+        .msg-avatar { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 700; }
+        .msg-bubble { padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.5; word-wrap: break-word; }
+        .msg-row.received .msg-bubble { background: white; border: 1px solid #e8eef5; border-bottom-left-radius: 6px; color: var(--dark); }
+        .msg-row.sent .msg-bubble { background: var(--primary); color: white; border-bottom-right-radius: 6px; }
+        .msg-time { font-size: 10.5px; color: #94a3b8; margin-top: 4px; align-self: flex-end; }
+
+        .chat-input-area { padding: 16px 24px; background: white; border-top: 1px solid #e8eef5; flex-shrink: 0; }
+        .chat-input-wrap { display: flex; gap: 10px; align-items: center; }
+        .chat-input-wrap input { flex: 1; padding: 14px 18px; border: 1.5px solid #e2e8f0; border-radius: 50px; font-size: 14px; font-family: inherit; background: #FAFCFF; outline: none; transition: 0.2s; }
+        .chat-input-wrap input:focus { border-color: var(--secondary); background: white; box-shadow: 0 0 0 4px rgba(0,166,166,0.08); }
+        .chat-input-wrap button { width: 48px; height: 48px; border-radius: 50%; border: none; background: linear-gradient(125deg, var(--secondary), var(--primary)); color: white; font-size: 17px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .chat-input-wrap button:hover { transform: scale(1.05); background: linear-gradient(125deg, var(--accent), var(--primary)); }
+
+        .typing-indicator { display: none; align-items: center; gap: 6px; padding: 4px 24px 0; font-size: 12px; color: var(--gray); }
+        .typing-indicator.show { display: flex; }
+        .typing-dots span { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--secondary); margin: 0 1px; animation: typing 1.2s infinite; }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-4px); opacity: 1; } }
+
+        .whatsapp-float { position: fixed; bottom: 24px; right: 24px; z-index: 999; }
+        .whatsapp-btn { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #25D366, #128C7E); display: flex; align-items: center; justify-content: center; color: white; font-size: 26px; text-decoration: none; box-shadow: 0 10px 30px rgba(37,211,102,0.4); border: 3px solid white; transition: 0.3s; }
+        .whatsapp-btn:hover { transform: scale(1.1); }
+
+        @media (max-width: 768px) {
+            .chat-sidebar { display: none; }
+            .chat-layout { height: calc(100vh - 60px); }
+            .msg-row { max-width: 88%; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="dash-header">
+    <div class="container">
+        <div class="dash-logo">
+            <h1><i class="fas fa-bolt"></i> Vertex Talent</h1>
+            <span>LIVE CHAT SUPPORT</span>
+        </div>
+        <div class="header-links">
+            <a href="dashboard.html"><i class="fas fa-house"></i> Dashboard</a>
+            <a href="jobs.html"><i class="fas fa-briefcase"></i> Jobs</a>
+            <a href="chat.html" class="active"><i class="fas fa-comments"></i> Chat</a>
+            <span class="online-status">Agents online</span>
+        </div>
+    </div>
+</header>
+
+<div class="chat-layout">
+    <aside class="chat-sidebar">
+        <div class="sidebar-head">
+            <h3><i class="fas fa-comments" style="color:var(--secondary);"></i> Conversations</h3>
+            <p>Your support history</p>
+        </div>
+        <div class="conversations" id="conversationsList">
+            <!-- Populated by JS -->
+        </div>
+    </aside>
+
+    <main class="chat-main">
+        <div class="chat-head">
+            <div class="agent-avatar" id="agentAvatar"><i class="fas fa-headset"></i></div>
+            <div class="agent-info">
+                <strong id="agentName">Vertex Support Team</strong>
+                <span><i class="fas fa-circle" style="font-size:7px;"></i> Online · Typically replies instantly</span>
+            </div>
+            <div class="head-actions">
+                <a href="https://wa.me/447536578775" target="_blank" title="Continue on WhatsApp"><i class="fab fa-whatsapp" style="color:var(--whatsapp);"></i></a>
+                <a href="#" title="Clear chat" onclick="clearChat(); return false;"><i class="fas fa-trash"></i></a>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages"></div>
+
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="typing-dots"><span></span><span></span><span></span></div>
+            <span id="typingName">Agent is typing…</span>
+        </div>
+
+        <div class="chat-input-area">
+            <div class="chat-input-wrap">
+                <input type="text" id="chatInput" placeholder="Type your message…" autocomplete="off">
+                <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div class="whatsapp-float">
+    <a href="https://wa.me/447536578775?text=Hi%20Vertex%20Talent%2C%20I%20need%20support!" target="_blank" class="whatsapp-btn" title="WhatsApp Support"><i class="fab fa-whatsapp"></i></a>
+</div>
+
+<script>
+    /* ============ STATE ============ */
+    let socket = null;
+    let currentUser = { firstName: 'Friend', lastName: '', avatar: null };
+    try {
+        const stored = JSON.parse(localStorage.getItem('vertexUser')) || {};
+        currentUser = {
+            firstName: stored.firstName || 'Friend',
+            lastName: stored.lastName || '',
+            avatar: stored.avatarUrl || stored.avatar || null
+        };
+    } catch (e) {}
+
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const typingName = document.getElementById('typingName');
+    const conversationsList = document.getElementById('conversationsList');
+
+    /* ============ SEED CONVERSATIONS ============ */
+    const conversations = [
+        { id: 'c1', name: 'Sophie (Recruiter)', preview: 'Your interview is confirmed!', time: '10:42', unread: 1, color: 'linear-gradient(135deg,#00A6A6,#2DD4BF)' },
+        { id: 'c2', name: 'Vertex Support', preview: 'How can we help today?', time: '09:15', unread: 0, color: 'linear-gradient(135deg,#0F2B46,#244B6B)' },
+        { id: 'c3', name: 'James Carter (CEO)', preview: 'Welcome to Vertex Talent!', time: 'Yesterday', unread: 0, color: 'linear-gradient(135deg,#FF7B54,#FF9B7A)' }
+    ];
+
+    conversationsList.innerHTML = conversations.map(c => `
+        <a href="#" class="conv-item ${c.id === 'c2' ? 'active' : ''}" onclick="selectConversation('${c.id}', event)">
+            <div class="conv-avatar-fallback" style="background:${c.color};">${c.name.charAt(0)}</div>
+            <div class="conv-info">
+                <strong>${c.name}</strong>
+                <span>${c.preview}</span>
+            </div>
+            <div class="conv-meta">
+                <div class="time">${c.time}</div>
+                ${c.unread ? `<div class="unread">${c.unread}</div>` : ''}
+            </div>
+        </a>
+    `).join('');
+
+    function selectConversation(id, e) {
+        if (e) e.preventDefault();
+        document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active'));
+        if (e) e.currentTarget.classList.add('active');
+        showToast('Switched conversation', 'success');
+    }
+
+    /* ============ MESSAGE HELPERS ============ */
+    function getInitials(name) {
+        return name.split(' ').map(n => n.charAt(0)).join('').toUpperCase().slice(0, 2);
+    }
+
+    function appendMessage(text, sender = 'received', senderName = 'Vertex Agent') {
+        const row = document.createElement('div');
+        row.className = 'msg-row ' + sender;
+
+        const isSent = sender === 'sent';
+        const avatarBg = isSent ? 'linear-gradient(135deg,#00A6A6,#0F2B46)' : 'linear-gradient(135deg,#0F2B46,#244B6B)';
+        const initial = isSent ? getInitials((currentUser.firstName || 'U') + ' ' + (currentUser.lastName || '')) : 'VA';
+
+        row.innerHTML = `
+            <div class="msg-avatar" style="background:${avatarBg};">${initial}</div>
+            <div>
+                <div class="msg-bubble">${escapeHtml(text)}</div>
+                <div class="msg-time" style="text-align:${isSent ? 'right' : 'left'};">${new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</div>
+            </div>
+        `;
+        chatMessages.appendChild(row);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
+
+    /* ============ SEED WELCOME MESSAGES ============ */
+    appendMessage(`Hi ${currentUser.firstName}! 👋 Welcome to Vertex Talent support. How can we help you today?`, 'received');
+    setTimeout(() => {
+        appendMessage('You can ask about job applications, interview prep, salary advice, or anything else!', 'received');
+    }, 1200);
+
+    /* ============ TOAST ============ */
+    let toastTimer;
+    function showToast(msg, type = 'success') {
+        const existing = document.querySelector('.toast');
+        if (existing) existing.remove();
+        const t = document.createElement('div');
+        t.className = 'toast show ' + type;
+        t.style.cssText = 'position:fixed;top:24px;right:24px;z-index:10001;padding:14px 22px;border-radius:14px;background:white;box-shadow:0 28px 45px -12px rgba(0,0,0,0.18);display:flex;align-items:center;gap:12px;font-size:14px;font-weight:600;border-left:4px solid ' + (type === 'error' ? '#ef4444' : '#10b981') + ';';
+        t.innerHTML = '<i class="fas fa-' + (type === 'error' ? 'exclamation-circle' : 'check-circle') + '" style="color:' + (type === 'error' ? '#ef4444' : '#10b981') + ';"></i> ' + escapeHtml(msg);
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 3200);
+    }
+
+    /* ============ SEND MESSAGE ============ */
+    function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        appendMessage(text, 'sent');
+        chatInput.value = '';
+        chatInput.focus();
+
+        // Send via socket if available
+        if (socket && socket.connected) {
+            socket.emit('chat-message', { message: text, user: currentUser });
+        }
+
+        // Simulate agent typing + reply
+        setTimeout(() => {
+            typingIndicator.classList.add('show');
+            typingName.textContent = 'Agent is typing…';
+        }, 400);
+
+        setTimeout(() => {
+            typingIndicator.classList.remove('show');
+            const reply = getAutoReply(text);
+            appendMessage(reply, 'received');
+        }, 1800 + Math.random() * 800);
+    }
+
+    function getAutoReply(text) {
+        const lower = text.toLowerCase();
+        if (lower.includes('job') || lower.includes('apply')) return "Great! You can browse all live UK jobs on our Jobs page. Would you like help with a specific role or location?";
+        if (lower.includes('interview')) return "Happy to help with interview prep! We offer free coaching sessions. Would you like me to book you in with a specialist?";
+        if (lower.includes('salary') || lower.includes('pay')) return "Salary negotiation is our specialty! Our average candidate secures 12% above initial offers. Want a free salary review?";
+        if (lower.includes('cv') || lower.includes('resume')) return "We offer free CV reviews! Send it to hello@vertextalent.co.uk or upload it in your profile and we'll get back within 24h.";
+        if (lower.includes('whatsapp') || lower.includes('phone')) return "You can also reach us on WhatsApp at +44 7536 578775 — click the green button for instant messaging!";
+        if (lower.includes('thank')) return "You're very welcome! Is there anything else I can help you with today? 😊";
+        if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) return "Hello! 👋 How can I assist you with your job search or hiring needs today?";
+        return "Thanks for reaching out! A member of our team will be with you shortly. In the meantime, feel free to browse our live jobs or connect via WhatsApp for an instant reply.";
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+    /* ============ CLEAR CHAT ============ */
+    function clearChat() {
+        chatMessages.innerHTML = '';
+        appendMessage('Chat cleared. How can we help you today?', 'received');
+        showToast('Chat cleared', 'success');
+    }
+
+    /* ============ SOCKET.IO (optional) ============ */
+    try {
+        if (typeof io !== 'undefined') {
+            // Connect to your server.js socket endpoint
+            socket = io('/', { transports: ['websocket', 'polling'], reconnection: true, reconnectionAttempts: 3 });
+
+            socket.on('connect', () => {
+                console.log('✅ Socket connected:', socket.id);
+                socket.emit('join-support', { user: currentUser });
+            });
+
+            socket.on('chat-reply', (data) => {
+                typingIndicator.classList.remove('show');
+                appendMessage(data.message || data, 'received', data.agentName || 'Vertex Agent');
+            });
+
+            socket.on('agent-typing', (data) => {
+                typingIndicator.classList.add('show');
+                typingName.textContent = (data.name || 'Agent') + ' is typing…';
+                clearTimeout(window._typingTimer);
+                window._typingTimer = setTimeout(() => typingIndicator.classList.remove('show'), 3000);
+            });
+
+            socket.on('disconnect', () => {
+                console.log('❌ Socket disconnected — using simulated replies');
+            });
+        }
+    } catch (e) {
+        console.log('Socket.io not available, using simulated replies');
+    }
+</script>
+</body>
+</html>
