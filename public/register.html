@@ -388,13 +388,13 @@
         }
         .err-msg.show { display: flex; }
 
-        /* Address section */
+        /* Section divider */
         .section-divider {
             grid-column: 1 / -1;
             display: flex;
             align-items: center;
             gap: 12px;
-            margin: 6px 0 -2px;
+            margin: 10px 0 2px;
         }
         .section-divider span {
             font-size: 11px;
@@ -497,6 +497,152 @@
             color: var(--success);
         }
 
+        /* ============ PIN SECTION ============ */
+        .pin-section {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(0,166,166,0.06), rgba(15,43,70,0.04));
+            border: 1.5px solid rgba(0,166,166,0.25);
+            border-radius: 20px;
+            padding: 22px;
+            margin-top: 6px;
+        }
+        .pin-section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+        .pin-section-header i {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .pin-section-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .pin-section-sub {
+            font-size: 12.5px;
+            color: var(--gray);
+            margin-bottom: 18px;
+            margin-left: 44px;
+        }
+
+        .pin-field {
+            margin-bottom: 18px;
+        }
+        .pin-field:last-child { margin-bottom: 0; }
+        .pin-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        .pin-label .pin-status {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--success);
+            display: none;
+            align-items: center;
+            gap: 4px;
+        }
+        .pin-label .pin-status.show { display: inline-flex; }
+        .pin-label .pin-status.error { color: var(--danger); }
+
+        .pin-inputs {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+        .pin-digit {
+            width: 100%;
+            aspect-ratio: 1 / 1.1;
+            border: 1.5px solid #d5e0ea;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 800;
+            font-family: inherit;
+            color: var(--primary);
+            background: white;
+            outline: none;
+            transition: 0.2s;
+            caret-color: var(--secondary);
+            -moz-appearance: textfield;
+        }
+        .pin-digit::-webkit-outer-spin-button,
+        .pin-digit::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .pin-digit:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(0,166,166,0.13);
+            transform: translateY(-2px);
+        }
+        .pin-digit.filled {
+            border-color: var(--secondary);
+            background: rgba(0,166,166,0.06);
+        }
+        .pin-digit.error {
+            border-color: var(--danger);
+            background: #fef2f2;
+            animation: shake 0.35s;
+        }
+        .pin-digit.success {
+            border-color: var(--success);
+            background: rgba(16,185,129,0.08);
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        .pin-err {
+            font-size: 11.5px;
+            color: var(--danger);
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+        }
+        .pin-err.show { display: flex; }
+
+        .pin-strength {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        .pin-strength-bar {
+            flex: 1;
+            height: 4px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            transition: 0.3s;
+        }
+        .pin-strength-bar.weak { background: var(--danger); }
+        .pin-strength-bar.medium { background: var(--gold); }
+        .pin-strength-bar.strong { background: var(--success); }
+        .pin-strength-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray);
+            margin-top: 4px;
+            text-align: right;
+        }
+
         /* Submit button */
         .submit-btn {
             grid-column: 1 / -1;
@@ -537,7 +683,7 @@
         .terms a { color: var(--secondary); text-decoration: none; font-weight: 600; }
         .terms a:hover { text-decoration: underline; }
 
-        /* ============ SUCCESS OVERLAY (5 second animation) ============ */
+        /* ============ SUCCESS OVERLAY ============ */
         .success-overlay {
             position: fixed;
             inset: 0;
@@ -706,6 +852,9 @@
             .success-circle { width: 100px; height: 100px; }
             .success-circle svg { width: 54px; height: 54px; }
             .header-actions .header-link { display: none; }
+            .pin-digit { font-size: 18px; border-radius: 10px; }
+            .pin-inputs { gap: 6px; }
+            .pin-section { padding: 16px; }
         }
     </style>
 </head>
@@ -756,6 +905,13 @@
                     <p>Your data is encrypted and never shared without consent.</p>
                 </div>
             </div>
+            <div class="benefit-item">
+                <div class="benefit-icon"><i class="fas fa-key"></i></div>
+                <div>
+                    <h4>Secure 6-Digit PIN</h4>
+                    <p>Fast, passwordless login with your personal secure PIN.</p>
+                </div>
+            </div>
         </div>
 
         <div class="trust-card">
@@ -780,6 +936,7 @@
             <div class="step active" id="step1"></div>
             <div class="step" id="step2"></div>
             <div class="step" id="step3"></div>
+            <div class="step" id="step4"></div>
         </div>
 
         <form id="registerForm" class="form-grid" novalidate>
@@ -910,6 +1067,55 @@
                 </div>
             </div>
 
+            <!-- ============ PIN SECTION ============ -->
+            <div class="pin-section">
+                <div class="pin-section-header">
+                    <i class="fas fa-lock"></i>
+                    <h3>Secure Your Account</h3>
+                </div>
+                <p class="pin-section-sub">Create a 6-digit PIN to log in instantly and keep your account protected.</p>
+
+                <!-- Create PIN -->
+                <div class="pin-field">
+                    <div class="pin-label">
+                        <span>Create your 6-digit PIN <span style="color:var(--accent);">*</span></span>
+                        <span class="pin-status" id="pinCreateStatus"><i class="fas fa-check"></i> Looks good</span>
+                    </div>
+                    <div class="pin-inputs" id="pinCreateInputs">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" data-pin="create" aria-label="PIN digit 1">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" data-pin="create" aria-label="PIN digit 2">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" data-pin="create" aria-label="PIN digit 3">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" data-pin="create" aria-label="PIN digit 4">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" data-pin="create" aria-label="PIN digit 5">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" data-pin="create" aria-label="PIN digit 6">
+                    </div>
+                    <div class="pin-strength" id="pinStrength">
+                        <div class="pin-strength-bar"></div>
+                        <div class="pin-strength-bar"></div>
+                        <div class="pin-strength-bar"></div>
+                    </div>
+                    <div class="pin-strength-label" id="pinStrengthLabel">PIN strength</div>
+                    <div class="pin-err" id="err-pinCreate"><i class="fas fa-exclamation-circle"></i> PIN must be exactly 6 digits. Avoid simple patterns like 000000 or 123456.</div>
+                </div>
+
+                <!-- Confirm PIN -->
+                <div class="pin-field">
+                    <div class="pin-label">
+                        <span>Confirm your new PIN <span style="color:var(--accent);">*</span></span>
+                        <span class="pin-status" id="pinConfirmStatus"><i class="fas fa-check"></i> Match</span>
+                    </div>
+                    <div class="pin-inputs" id="pinConfirmInputs">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" data-pin="confirm" aria-label="Confirm PIN digit 1">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" data-pin="confirm" aria-label="Confirm PIN digit 2">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" data-pin="confirm" aria-label="Confirm PIN digit 3">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" data-pin="confirm" aria-label="Confirm PIN digit 4">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" data-pin="confirm" aria-label="Confirm PIN digit 5">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" data-pin="confirm" aria-label="Confirm PIN digit 6">
+                    </div>
+                    <div class="pin-err" id="err-pinConfirm"><i class="fas fa-exclamation-circle"></i> PINs do not match. Please re-enter your confirmation PIN.</div>
+                </div>
+            </div>
+
             <!-- Submit -->
             <button type="submit" class="submit-btn" id="submitBtn">
                 <i class="fas fa-user-plus"></i>
@@ -967,7 +1173,18 @@
     const toast = document.getElementById('toast');
     const toastMsg = document.getElementById('toastMsg');
 
+    const pinCreateInputs = document.querySelectorAll('#pinCreateInputs .pin-digit');
+    const pinConfirmInputs = document.querySelectorAll('#pinConfirmInputs .pin-digit');
+    const pinCreateStatus = document.getElementById('pinCreateStatus');
+    const pinConfirmStatus = document.getElementById('pinConfirmStatus');
+    const errPinCreate = document.getElementById('err-pinCreate');
+    const errPinConfirm = document.getElementById('err-pinConfirm');
+    const pinStrengthBars = document.querySelectorAll('#pinStrength .pin-strength-bar');
+    const pinStrengthLabel = document.getElementById('pinStrengthLabel');
+
     let uploadedFile = null;
+    let createPinValid = false;
+    let confirmPinValid = false;
 
     /* ============ TOAST HELPER ============ */
     let toastTimer;
@@ -1058,6 +1275,160 @@
         reader.readAsDataURL(file);
     }
 
+    /* ============ PIN LOGIC ============ */
+    function getPinValue(inputs) {
+        return Array.from(inputs).map(i => i.value).join('');
+    }
+
+    function isWeakPin(pin) {
+        if (/^(\d)\1{5}$/.test(pin)) return true; // 000000, 111111...
+        if (pin === '123456' || pin === '654321' || pin === '012345' || pin === '987654') return true;
+        return false;
+    }
+
+    function updatePinStrength(pin) {
+        pinStrengthBars.forEach(b => b.className = 'pin-strength-bar');
+        if (pin.length === 0) {
+            pinStrengthLabel.textContent = 'PIN strength';
+            pinStrengthLabel.style.color = 'var(--gray)';
+            return;
+        }
+        let score = 0;
+        if (pin.length === 6) score++;
+        if (!/^(\d)\1{5}$/.test(pin)) score++;
+        if (!['123456','654321','012345','987654'].includes(pin)) score++;
+
+        if (pin.length < 6) {
+            pinStrengthLabel.textContent = 'Too short';
+            pinStrengthLabel.style.color = 'var(--danger)';
+            return;
+        }
+        if (score <= 1) {
+            pinStrengthBars[0].classList.add('weak');
+            pinStrengthLabel.textContent = 'Weak PIN';
+            pinStrengthLabel.style.color = 'var(--danger)';
+        } else if (score === 2) {
+            pinStrengthBars[0].classList.add('medium');
+            pinStrengthBars[1].classList.add('medium');
+            pinStrengthLabel.textContent = 'Medium PIN';
+            pinStrengthLabel.style.color = 'var(--gold)';
+        } else {
+            pinStrengthBars[0].classList.add('strong');
+            pinStrengthBars[1].classList.add('strong');
+            pinStrengthBars[2].classList.add('strong');
+            pinStrengthLabel.textContent = 'Strong PIN';
+            pinStrengthLabel.style.color = 'var(--success)';
+        }
+    }
+
+    function validateCreatePin() {
+        const pin = getPinValue(pinCreateInputs);
+        const complete = pin.length === 6;
+        const weak = complete && isWeakPin(pin);
+        const invalid = complete && weak;
+        const ok = complete && !weak;
+
+        pinCreateInputs.forEach(inp => {
+            inp.classList.toggle('error', invalid);
+            inp.classList.toggle('success', ok);
+        });
+
+        errPinCreate.classList.toggle('show', invalid);
+        pinCreateStatus.classList.toggle('show', ok);
+        pinCreateStatus.classList.toggle('error', false);
+        pinCreateStatus.innerHTML = '<i class="fas fa-check"></i> Looks good';
+
+        createPinValid = ok;
+        return ok;
+    }
+
+    function validateConfirmPin() {
+        const pin = getPinValue(pinCreateInputs);
+        const confirm = getPinValue(pinConfirmInputs);
+        const complete = confirm.length === 6;
+        const match = complete && pin === confirm;
+        const mismatch = complete && pin !== confirm;
+
+        pinConfirmInputs.forEach(inp => {
+            inp.classList.toggle('error', mismatch);
+            inp.classList.toggle('success', match);
+        });
+
+        errPinConfirm.classList.toggle('show', mismatch);
+        pinConfirmStatus.classList.toggle('show', match);
+
+        confirmPinValid = match;
+        return match;
+    }
+
+    function setupPinInputs(inputs, type) {
+        inputs.forEach((input, idx) => {
+            input.addEventListener('input', (e) => {
+                // Only digits
+                e.target.value = e.target.value.replace(/\D/g, '');
+                if (e.target.value) {
+                    e.target.classList.add('filled');
+                    if (idx < inputs.length - 1) inputs[idx + 1].focus();
+                } else {
+                    e.target.classList.remove('filled');
+                }
+                if (type === 'create') {
+                    updatePinStrength(getPinValue(inputs));
+                    validateCreatePin();
+                    // If confirm already filled, re-validate
+                    if (getPinValue(pinConfirmInputs).length > 0) validateConfirmPin();
+                } else {
+                    validateConfirmPin();
+                }
+                updateSteps();
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && idx > 0) {
+                    inputs[idx - 1].focus();
+                    inputs[idx - 1].value = '';
+                    inputs[idx - 1].classList.remove('filled');
+                    if (type === 'create') {
+                        updatePinStrength(getPinValue(inputs));
+                        validateCreatePin();
+                        if (getPinValue(pinConfirmInputs).length > 0) validateConfirmPin();
+                    } else {
+                        validateConfirmPin();
+                    }
+                }
+                if (e.key === 'ArrowLeft' && idx > 0) inputs[idx - 1].focus();
+                if (e.key === 'ArrowRight' && idx < inputs.length - 1) inputs[idx + 1].focus();
+            });
+
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+                if (!paste) return;
+                paste.split('').forEach((ch, i) => {
+                    if (inputs[i]) {
+                        inputs[i].value = ch;
+                        inputs[i].classList.add('filled');
+                    }
+                });
+                const nextIdx = Math.min(paste.length, inputs.length - 1);
+                inputs[nextIdx].focus();
+                if (type === 'create') {
+                    updatePinStrength(getPinValue(inputs));
+                    validateCreatePin();
+                    if (getPinValue(pinConfirmInputs).length > 0) validateConfirmPin();
+                } else {
+                    validateConfirmPin();
+                }
+                updateSteps();
+            });
+
+            input.addEventListener('focus', (e) => e.target.select());
+        });
+    }
+
+    setupPinInputs(pinCreateInputs, 'create');
+    setupPinInputs(pinConfirmInputs, 'confirm');
+
     /* ============ FIELD VALIDATION ============ */
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const ukPhoneRegex = /^(7\d{3}\s?\d{6}|07\d{3}\s?\d{6})$/;
@@ -1134,28 +1505,37 @@
             const el = document.getElementById(f);
             return el && el.value.trim() !== '';
         }).length;
+        const pinDone = getPinValue(pinCreateInputs).length === 6 && getPinValue(pinConfirmInputs).length === 6;
         const step1 = document.getElementById('step1');
         const step2 = document.getElementById('step2');
         const step3 = document.getElementById('step3');
-        [step1, step2, step3].forEach(s => s.className = 'step');
+        const step4 = document.getElementById('step4');
+        [step1, step2, step3, step4].forEach(s => s.className = 'step');
         if (filled <= 3) step1.classList.add('active');
         else if (filled <= 6) { step1.classList.add('done'); step2.classList.add('active'); }
-        else { step1.classList.add('done'); step2.classList.add('done'); step3.classList.add('active'); }
+        else if (!pinDone) { step1.classList.add('done'); step2.classList.add('done'); step3.classList.add('active'); }
+        else { step1.classList.add('done'); step2.classList.add('done'); step3.classList.add('done'); step4.classList.add('active'); }
     }
 
     /* ============ SUBMIT ============ */
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Validate every field
+        // Validate all fields
         const fields = ['firstName', 'lastName', 'email', 'phone', 'dob', 'addressLine1', 'city', 'postcode', 'jobType'];
         let allValid = true;
         fields.forEach(f => { if (!validateField(f)) allValid = false; });
 
-        if (!allValid) {
-            showToast('Please fix the highlighted fields before continuing.', 'error');
-            // Scroll to first error
-            const firstErr = document.querySelector('.err-msg.show');
+        // Validate PINs
+        const pinOk = validateCreatePin();
+        const confirmOk = validateConfirmPin();
+
+        if (!allValid || !pinOk || !confirmOk) {
+            if (!allValid) showToast('Please fix the highlighted fields before continuing.', 'error');
+            else if (!pinOk) showToast('Please create a valid 6-digit PIN.', 'error');
+            else if (!confirmOk) showToast('Your confirmation PIN does not match.', 'error');
+
+            const firstErr = document.querySelector('.err-msg.show, .pin-err.show');
             if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return;
         }
@@ -1175,6 +1555,7 @@
         formData.append('city', document.getElementById('city').value.trim());
         formData.append('postcode', document.getElementById('postcode').value.trim().toUpperCase());
         formData.append('jobType', document.getElementById('jobType').value);
+        formData.append('pin', getPinValue(pinCreateInputs));
         if (uploadedFile) formData.append('avatar', uploadedFile);
 
         try {
