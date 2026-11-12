@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Join Us | Vertex Talent — Create Your Account</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #0F2B46;
+            --primary-dark: #081C2F;
+            --primary-soft: #244B6B;
+            --secondary: #00A6A6;
+            --secondary-glow: #2DD4BF;
+            --accent: #FF7B54;
+            --accent-glow: #FF9B7A;
+            --gold: #FFC857;
+            --dark: #0A1A2B;
+            --gray: #4F6F8F;
+            --light-mist: #F2F7FF;
+            --white: #FFFFFF;
+            --danger: #ef4444;
+            --success: #10b981;
+            --shadow-soft: 0 20px 35px -12px rgba(0,0,0,0.06);
+            --shadow-bold: 0 28px 45px -12px rgba(0,0,0,0.18);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FBFDFF;
+            color: var(--dark);
+            line-height: 1.5;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .page-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(0,166,166,0.08), transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255,123,84,0.08), transparent 40%),
+                linear-gradient(135deg, #FBFDFF 0%, #F2F7FF 100%);
+        }
+        .page-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1600');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.03;
+        }
+
+        /* Header */
+        .reg-header {
+            background: rgba(255,255,255,0.94);
+            backdrop-filter: blur(16px);
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(0,166,166,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .reg-header .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(125deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .logo span {
+            font-size: 11px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .header-link {
+            text-decoration: none;
+            color: var(--gray);
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .header-link:hover { color: var(--secondary); }
+        .btn-login-sm {
+            padding: 9px 22px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            background: transparent;
+            transition: 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-login-sm:hover { background: var(--primary); color: white; }
+
+        /* Main layout */
+        .reg-main {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 48px 28px 80px;
+            display: grid;
+            grid-template-columns: 1fr 1.15fr;
+            gap: 48px;
+            align-items: start;
+        }
+
+        /* Left info panel */
+        .info-panel {
+            position: sticky;
+            top: 100px;
+        }
+        .info-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            background: rgba(0,166,166,0.1);
+            color: var(--secondary);
+            font-weight: 600;
+            font-size: 13px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+        }
+        .info-title {
+            font-size: 44px;
+            font-weight: 800;
+            line-height: 1.1;
+            color: var(--primary);
+            letter-spacing: -1.2px;
+            margin-bottom: 20px;
+        }
+        .info-title span { color: var(--secondary); }
+        .info-sub {
+            font-size: 17px;
+            color: var(--gray);
+            margin-bottom: 36px;
+            max-width: 420px;
+        }
+        .benefit-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-bottom: 40px;
+        }
+        .benefit-item {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+        .benefit-icon {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(0,166,166,0.15), rgba(15,43,70,0.08));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            font-size: 18px;
+        }
+        .benefit-item h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 2px;
+        }
+        .benefit-item p {
+            font-size: 13.5px;
+            color: var(--gray);
+        }
+
+        .trust-card {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,166,166,0.18);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: var(--shadow-soft);
+        }
+        .trust-avatars {
+            display: flex;
+            margin-bottom: 12px;
+        }
+        .trust-avatars div {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid white;
+            background-size: cover;
+            background-position: center;
+            margin-left: -12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .trust-avatars div:first-child { margin-left: 0; }
+        .trust-card p {
+            font-size: 13.5px;
+            color: var(--gray);
+        }
+        .trust-card strong { color: var(--primary); }
+
+        /* Right form card */
+        .form-card {
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,166,166,0.15);
+            border-radius: 32px;
+            padding: 40px;
+            box-shadow: var(--shadow-bold);
+        }
+        .form-head {
+            margin-bottom: 28px;
+        }
+        .form-head h2 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+        .form-head p {
+            font-size: 14.5px;
+            color: var(--gray);
+        }
+
+        /* Progress steps */
+        .steps {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+        .step {
+            flex: 1;
+            height: 5px;
+            border-radius: 10px;
+            background: #e2e8f0;
+            transition: 0.3s;
+        }
+        .step.active { background: var(--secondary); }
+        .step.done { background: var(--primary); }
+
+        /* Form grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+        .field { display: flex; flex-direction: column; gap: 7px; }
+        .field.full { grid-column: 1 / -1; }
+        .field label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .field label .req { color: var(--accent); }
+        .field label i { color: var(--secondary); font-size: 12px; }
+
+        .input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .input-wrap i.lead {
+            position: absolute;
+            left: 16px;
+            color: #94a3b8;
+            font-size: 14px;
+            pointer-events: none;
+            transition: 0.2s;
+        }
+        .input-wrap input,
+        .input-wrap select {
+            width: 100%;
+            padding: 13px 16px 13px 44px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 14.5px;
+            font-family: inherit;
+            color: var(--dark);
+            background: #FAFCFF;
+            transition: 0.2s;
+            outline: none;
+        }
+        .input-wrap input:focus,
+        .input-wrap select:focus {
+            border-color: var(--secondary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0,166,166,0.1);
+        }
+        .input-wrap input:focus + i.lead,
+        .input-wrap select:focus + i.lead {
+            color: var(--secondary);
+        }
+        .input-wrap input.error,
+        .input-wrap select.error {
+            border-color: var(--danger);
+            background: #fef2f2;
+        }
+        .input-wrap select {
+            appearance: none;
+            cursor: pointer;
+        }
+        .input-wrap .chevron {
+            position: absolute;
+            right: 16px;
+            color: #94a3b8;
+            font-size: 12px;
+            pointer-events: none;
+        }
+
+        /* Phone prefix */
+        .phone-prefix {
+            position: absolute;
+            left: 16px;
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--primary);
+            pointer-events: none;
+            padding-right: 8px;
+            border-right: 1.5px solid #e2e8f0;
+        }
+        .input-wrap.phone input { padding-left: 62px; }
+
+        /* Date + auto age */
+        .dob-row {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 12px;
+        }
+        .age-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 13px 16px;
+            background: linear-gradient(135deg, rgba(0,166,166,0.1), rgba(255,200,87,0.12));
+            border: 1.5px dashed var(--secondary);
+            border-radius: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 14.5px;
+        }
+        .age-badge i { color: var(--gold); }
+        .age-badge.empty { color: #94a3b8; font-weight: 500; border-color: #e2e8f0; }
+        .age-badge.empty i { color: #cbd5e1; }
+
+        /* Error message */
+        .err-msg {
+            font-size: 11.5px;
+            color: var(--danger);
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 4px;
+        }
+        .err-msg.show { display: flex; }
+
+        /* Address section */
+        .section-divider {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 6px 0 -2px;
+        }
+        .section-divider span {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--secondary);
+        }
+        .section-divider::after {
+            content: '';
+            flex: 1;
+            height: 1.5px;
+            background: linear-gradient(to right, rgba(0,166,166,0.2), transparent);
+        }
+
+        /* Upload area */
+        .upload-area {
+            grid-column: 1 / -1;
+            border: 2px dashed #cbd5e1;
+            border-radius: 20px;
+            padding: 28px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.25s;
+            background: #FAFCFF;
+            position: relative;
+            overflow: hidden;
+        }
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--secondary);
+            background: rgba(0,166,166,0.04);
+        }
+        .upload-area.has-file {
+            border-style: solid;
+            border-color: var(--success);
+            background: rgba(16,185,129,0.04);
+        }
+        .upload-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0,166,166,0.15), rgba(15,43,70,0.08));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: var(--secondary);
+            transition: 0.3s;
+        }
+        .upload-area.has-file .upload-icon {
+            background: rgba(16,185,129,0.15);
+            color: var(--success);
+        }
+        .upload-area h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        .upload-area p {
+            font-size: 12.5px;
+            color: var(--gray);
+        }
+        .upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-preview {
+            display: none;
+            align-items: center;
+            gap: 14px;
+            justify-content: center;
+        }
+        .upload-area.has-file .file-preview { display: flex; }
+        .upload-area.has-file .upload-default { display: none; }
+        .file-preview img {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--success);
+        }
+        .file-preview .file-info {
+            text-align: left;
+        }
+        .file-preview .file-info strong {
+            font-size: 14px;
+            color: var(--primary);
+            display: block;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .file-preview .file-info span {
+            font-size: 12px;
+            color: var(--success);
+        }
+
+        /* Submit button */
+        .submit-btn {
+            grid-column: 1 / -1;
+            margin-top: 8px;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(125deg, var(--secondary), var(--primary));
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 12px 25px -6px rgba(0,166,166,0.4);
+        }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 32px -8px rgba(0,166,166,0.5);
+            background: linear-gradient(125deg, var(--accent), var(--primary));
+        }
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .terms {
+            grid-column: 1 / -1;
+            font-size: 12px;
+            color: var(--gray);
+            text-align: center;
+            margin-top: 4px;
+        }
+        .terms a { color: var(--secondary); text-decoration: none; font-weight: 600; }
+        .terms a:hover { text-decoration: underline; }
+
+        /* ============ SUCCESS OVERLAY (5 second animation) ============ */
+        .success-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: linear-gradient(135deg, rgba(15,43,70,0.97), rgba(8,28,47,0.98));
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 28px;
+            color: white;
+            backdrop-filter: blur(8px);
+        }
+        .success-overlay.active { display: flex; }
+
+        .success-circle {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-glow));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            position: relative;
+            box-shadow: 0 0 0 0 rgba(0,166,166,0.6);
+            animation: pulseRing 1.8s ease-out infinite;
+        }
+        @keyframes pulseRing {
+            0% { box-shadow: 0 0 0 0 rgba(0,166,166,0.6); }
+            70% { box-shadow: 0 0 0 40px rgba(0,166,166,0); }
+            100% { box-shadow: 0 0 0 0 rgba(0,166,166,0); }
+        }
+        .success-circle svg {
+            width: 70px;
+            height: 70px;
+        }
+        .success-circle path {
+            stroke: white;
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: drawCheck 0.7s 0.3s ease forwards;
+        }
+        @keyframes drawCheck {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .success-overlay h2 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+            animation: fadeUp 0.6s 0.2s both;
+        }
+        .success-overlay p {
+            font-size: 16px;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            animation: fadeUp 0.6s 0.4s both;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .success-name {
+            color: var(--secondary-glow);
+            font-weight: 700;
+        }
+
+        .redirect-box {
+            margin-top: 32px;
+            padding: 16px 28px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            animation: fadeUp 0.6s 0.6s both;
+        }
+        .redirect-box .spinner {
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(255,255,255,0.25);
+            border-top-color: var(--secondary-glow);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .redirect-box span {
+            font-size: 14px;
+            color: #e2eef7;
+        }
+        .redirect-countdown {
+            font-weight: 800;
+            color: var(--gold);
+            font-size: 18px;
+            min-width: 24px;
+            display: inline-block;
+        }
+
+        .progress-bar-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--secondary), var(--gold));
+            width: 0%;
+            animation: fillProgress 5s linear forwards;
+            z-index: 10000;
+        }
+        @keyframes fillProgress {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 10001;
+            padding: 14px 22px;
+            border-radius: 14px;
+            background: white;
+            box-shadow: var(--shadow-bold);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-left: 4px solid var(--success);
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast i { font-size: 18px; }
+        .toast.success i { color: var(--success); }
+        .toast.error i { color: var(--danger); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .reg-main {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .info-panel {
+                position: static;
+            }
+            .info-title { font-size: 36px; }
+        }
+        @media (max-width: 640px) {
+            .reg-main { padding: 32px 18px 60px; }
+            .form-card { padding: 28px 22px; border-radius: 24px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .dob-row { grid-template-columns: 1fr; }
+            .info-title { font-size: 30px; }
+            .success-overlay h2 { font-size: 24px; }
+            .success-circle { width: 100px; height: 100px; }
+            .success-circle svg { width: 54px; height: 54px; }
+            .header-actions .header-link { display: none; }
+        }
+    </style>
+</head>
+<body>
+<div class="page-bg"></div>
+
+<!-- Header -->
+<header class="reg-header">
+    <div class="container">
+        <div class="logo">
+            <h1><i class="fas fa-bolt"></i> Vertex Talent</h1>
+            <span>UK & Global · Elite Recruitment</span>
+        </div>
+        <div class="header-actions">
+            <a href="index.html" class="header-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+            <a href="login.html" class="btn-login-sm"><i class="fas fa-sign-in-alt"></i> Login</a>
+        </div>
+    </div>
+</header>
+
+<!-- Main -->
+<main class="reg-main">
+    <!-- Left info panel -->
+    <aside class="info-panel">
+        <div class="info-badge"><i class="fas fa-star"></i> Join 12,000+ members</div>
+        <h1 class="info-title">Your next <span>career move</span> starts right here.</h1>
+        <p class="info-sub">Create your free profile in under 2 minutes. Get matched with top UK employers and unlock 24/7 live chat support.</p>
+
+        <div class="benefit-list">
+            <div class="benefit-item">
+                <div class="benefit-icon"><i class="fas fa-bolt"></i></div>
+                <div>
+                    <h4>Instant Job Matches</h4>
+                    <p>AI-powered matching to roles that fit your skills and goals.</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon"><i class="fas fa-comments"></i></div>
+                <div>
+                    <h4>24/7 Live Support</h4>
+                    <p>Real recruiters online anytime to answer your questions.</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon"><i class="fas fa-shield-halved"></i></div>
+                <div>
+                    <h4>GDPR Secure & Private</h4>
+                    <p>Your data is encrypted and never shared without consent.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="trust-card">
+            <div class="trust-avatars">
+                <div style="background-image:url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100')"></div>
+                <div style="background-image:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100')"></div>
+                <div style="background-image:url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100')"></div>
+                <div style="background-image:url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100')"></div>
+            </div>
+            <p><strong>★★★★★ 4.9/5</strong> from over 2,400 verified members across the UK.</p>
+        </div>
+    </aside>
+
+    <!-- Right form -->
+    <section class="form-card">
+        <div class="form-head">
+            <h2>Create your account</h2>
+            <p>All fields marked <span style="color:var(--accent);font-weight:700;">*</span> are required.</p>
+        </div>
+
+        <div class="steps">
+            <div class="step active" id="step1"></div>
+            <div class="step" id="step2"></div>
+            <div class="step" id="step3"></div>
+        </div>
+
+        <form id="registerForm" class="form-grid" novalidate>
+
+            <!-- First Name -->
+            <div class="field">
+                <label for="firstName">First Name <span class="req">*</span></label>
+                <div class="input-wrap">
+                    <input type="text" id="firstName" name="firstName" placeholder="John" autocomplete="given-name" required>
+                    <i class="fas fa-user lead"></i>
+                </div>
+                <span class="err-msg" id="err-firstName"><i class="fas fa-exclamation-circle"></i> Please enter your first name.</span>
+            </div>
+
+            <!-- Last Name -->
+            <div class="field">
+                <label for="lastName">Last Name <span class="req">*</span></label>
+                <div class="input-wrap">
+                    <input type="text" id="lastName" name="lastName" placeholder="Smith" autocomplete="family-name" required>
+                    <i class="fas fa-user lead"></i>
+                </div>
+                <span class="err-msg" id="err-lastName"><i class="fas fa-exclamation-circle"></i> Please enter your last name.</span>
+            </div>
+
+            <!-- Email -->
+            <div class="field full">
+                <label for="email">Email Address <span class="req">*</span></label>
+                <div class="input-wrap">
+                    <input type="email" id="email" name="email" placeholder="john.smith@example.com" autocomplete="email" required>
+                    <i class="fas fa-envelope lead"></i>
+                </div>
+                <span class="err-msg" id="err-email"><i class="fas fa-exclamation-circle"></i> Please enter a valid email address.</span>
+            </div>
+
+            <!-- Phone (UK only) -->
+            <div class="field full">
+                <label for="phone">Phone Number <span style="font-size:11px;color:var(--gray);font-weight:500;">(UK only)</span> <span class="req">*</span></label>
+                <div class="input-wrap phone">
+                    <span class="phone-prefix">🇬🇧 +44</span>
+                    <input type="tel" id="phone" name="phone" placeholder="7911 123456" autocomplete="tel" maxlength="11" required>
+                </div>
+                <span class="err-msg" id="err-phone"><i class="fas fa-exclamation-circle"></i> Enter a valid UK mobile (e.g. 7911 123456).</span>
+            </div>
+
+            <!-- Date of Birth + Auto Age -->
+            <div class="field full">
+                <label for="dob">Date of Birth <span class="req">*</span> <span style="font-size:11px;color:var(--gray);font-weight:500;">(age calculates automatically)</span></label>
+                <div class="dob-row">
+                    <div class="input-wrap">
+                        <input type="date" id="dob" name="dob" required>
+                        <i class="fas fa-calendar lead"></i>
+                    </div>
+                    <div class="age-badge empty" id="ageBadge">
+                        <i class="fas fa-hourglass-half"></i>
+                        <span id="ageText">Age auto</span>
+                    </div>
+                </div>
+                <span class="err-msg" id="err-dob"><i class="fas fa-exclamation-circle"></i> You must be at least 16 years old.</span>
+            </div>
+
+            <!-- Address section -->
+            <div class="section-divider"><span>Your UK Address</span></div>
+
+            <div class="field full">
+                <label for="addressLine1">Address Line 1 <span class="req">*</span></label>
+                <div class="input-wrap">
+                    <input type="text" id="addressLine1" name="addressLine1" placeholder="123 High Street" autocomplete="address-line1" required>
+                    <i class="fas fa-home lead"></i>
+                </div>
+                <span class="err-msg" id="err-addressLine1"><i class="fas fa-exclamation-circle"></i> Please enter your address.</span>
+            </div>
+
+            <div class="field">
+                <label for="city">Town / City <span class="req">*</span></label>
+                <div class="input-wrap">
+                    <input type="text" id="city" name="city" placeholder="London" autocomplete="address-level2" required>
+                    <i class="fas fa-city lead"></i>
+                </div>
+                <span class="err-msg" id="err-city"><i class="fas fa-exclamation-circle"></i> Please enter your city.</span>
+            </div>
+
+            <div class="field">
+                <label for="postcode">Postcode <span class="req">*</span></label>
+                <div class="input-wrap">
+                    <input type="text" id="postcode" name="postcode" placeholder="SW1A 1AA" autocomplete="postal-code" maxlength="8" style="text-transform:uppercase;" required>
+                    <i class="fas fa-map-pin lead"></i>
+                </div>
+                <span class="err-msg" id="err-postcode"><i class="fas fa-exclamation-circle"></i> Enter a valid UK postcode.</span>
+            </div>
+
+            <!-- Job Type -->
+            <div class="field full">
+                <label for="jobType">Job Type You Want <span class="req">*</span></label>
+                <div class="input-wrap">
+                    <select id="jobType" name="jobType" required>
+                        <option value="" disabled selected>Select the job type you're looking for…</option>
+                        <option value="Permanent Full-Time">Permanent Full-Time</option>
+                        <option value="Permanent Part-Time">Permanent Part-Time</option>
+                        <option value="Temporary / Contract">Temporary / Contract</option>
+                        <option value="Executive / C-Suite">Executive / C-Suite</option>
+                        <option value="Internship / Graduate">Internship / Graduate</option>
+                        <option value="Remote / Hybrid">Remote / Hybrid</option>
+                        <option value="Freelance">Freelance</option>
+                    </select>
+                    <i class="fas fa-briefcase lead"></i>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <span class="err-msg" id="err-jobType"><i class="fas fa-exclamation-circle"></i> Please select a job type.</span>
+            </div>
+
+            <!-- Profile Picture Upload -->
+            <div class="field full">
+                <label>Profile Picture <span style="font-size:11px;color:var(--gray);font-weight:500;">(optional · JPG/PNG · max 5MB)</span></label>
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg, image/jpg" />
+                    <div class="upload-default">
+                        <div class="upload-icon"><i class="fas fa-cloud-arrow-up"></i></div>
+                        <h4>Click or drag to upload</h4>
+                        <p>PNG, JPG up to 5MB</p>
+                    </div>
+                    <div class="file-preview">
+                        <img id="previewImg" src="" alt="preview">
+                        <div class="file-info">
+                            <strong id="previewName">filename.jpg</strong>
+                            <span><i class="fas fa-check-circle"></i> Ready to upload</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <i class="fas fa-user-plus"></i>
+                <span>Create My Account</span>
+            </button>
+
+            <p class="terms">
+                By joining, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            </p>
+        </form>
+    </section>
+</main>
+
+<!-- ============ SUCCESS OVERLAY ============ -->
+<div class="success-overlay" id="successOverlay">
+    <div class="success-circle">
+        <svg viewBox="0 0 100 100">
+            <path d="M25 52 L43 70 L78 32" />
+        </svg>
+    </div>
+    <h2>Welcome aboard, <span class="success-name" id="successName">Friend</span>! 🎉</h2>
+    <p>Your Vertex Talent account has been created successfully.</p>
+    <p style="font-size:14px;">We're preparing your personalised dashboard…</p>
+
+    <div class="redirect-box">
+        <div class="spinner"></div>
+        <span>Redirecting in <span class="redirect-countdown" id="countdown">5</span> seconds</span>
+    </div>
+</div>
+<div class="progress-bar-bottom" id="progressBar" style="display:none;"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastMsg">Success</span>
+</div>
+
+<script>
+    /* ============ ELEMENT REFS ============ */
+    const form = document.getElementById('registerForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const dobInput = document.getElementById('dob');
+    const ageBadge = document.getElementById('ageBadge');
+    const ageText = document.getElementById('ageText');
+    const phoneInput = document.getElementById('phone');
+    const postcodeInput = document.getElementById('postcode');
+    const uploadArea = document.getElementById('uploadArea');
+    const avatarInput = document.getElementById('avatar');
+    const previewImg = document.getElementById('previewImg');
+    const previewName = document.getElementById('previewName');
+    const successOverlay = document.getElementById('successOverlay');
+    const successName = document.getElementById('successName');
+    const countdownEl = document.getElementById('countdown');
+    const progressBar = document.getElementById('progressBar');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+
+    let uploadedFile = null;
+
+    /* ============ TOAST HELPER ============ */
+    let toastTimer;
+    function showToast(msg, type = 'success') {
+        clearTimeout(toastTimer);
+        toastMsg.textContent = msg;
+        toast.className = 'toast show ' + type;
+        toast.querySelector('i').className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    /* ============ AUTO AGE FROM DOB ============ */
+    dobInput.addEventListener('change', () => {
+        const val = dobInput.value;
+        if (!val) {
+            ageBadge.classList.add('empty');
+            ageText.textContent = 'Age auto';
+            return;
+        }
+        const dob = new Date(val);
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const m = today.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+
+        if (age >= 0 && age < 120) {
+            ageBadge.classList.remove('empty');
+            ageText.textContent = age + ' years old';
+        } else {
+            ageBadge.classList.add('empty');
+            ageText.textContent = 'Invalid date';
+        }
+        validateField('dob');
+    });
+
+    /* ============ PHONE INPUT (UK only) ============ */
+    phoneInput.addEventListener('input', (e) => {
+        let v = e.target.value.replace(/[^\d\s]/g, '');
+        e.target.value = v;
+        validateField('phone');
+    });
+
+    /* ============ POSTCODE UPPERCASE ============ */
+    postcodeInput.addEventListener('input', (e) => {
+        e.target.value = e.target.value.toUpperCase();
+        validateField('postcode');
+    });
+
+    /* ============ UPLOAD AREA ============ */
+    uploadArea.addEventListener('click', () => avatarInput.click());
+    avatarInput.addEventListener('change', handleFile);
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        if (e.dataTransfer.files.length) {
+            avatarInput.files = e.dataTransfer.files;
+            handleFile();
+        }
+    });
+
+    function handleFile() {
+        const file = avatarInput.files[0];
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+            showToast('File too large. Maximum size is 5MB.', 'error');
+            avatarInput.value = '';
+            return;
+        }
+        if (!/^image\/(jpeg|jpg|png)$/.test(file.type)) {
+            showToast('Please upload a JPG or PNG image.', 'error');
+            avatarInput.value = '';
+            return;
+        }
+
+        uploadedFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImg.src = e.target.result;
+            previewName.textContent = file.name;
+            uploadArea.classList.add('has-file');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    /* ============ FIELD VALIDATION ============ */
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const ukPhoneRegex = /^(7\d{3}\s?\d{6}|07\d{3}\s?\d{6})$/;
+    const ukPostcodeRegex = /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i;
+
+    function setErr(field, show) {
+        const err = document.getElementById('err-' + field);
+        const input = document.getElementById(field);
+        if (err) err.classList.toggle('show', show);
+        if (input) {
+            if (input.parentElement) input.parentElement.classList.toggle('error', show);
+            input.classList.toggle('error', show);
+        }
+    }
+
+    function validateField(field) {
+        const el = document.getElementById(field);
+        if (!el) return true;
+        let valid = true;
+
+        switch (field) {
+            case 'firstName':
+                valid = el.value.trim().length >= 2;
+                break;
+            case 'lastName':
+                valid = el.value.trim().length >= 2;
+                break;
+            case 'email':
+                valid = emailRegex.test(el.value.trim());
+                break;
+            case 'phone':
+                const digits = el.value.replace(/\s/g, '');
+                valid = ukPhoneRegex.test(digits) || (digits.length === 10 && digits.startsWith('7'));
+                break;
+            case 'dob':
+                if (!el.value) { valid = false; break; }
+                const dob = new Date(el.value);
+                const today = new Date();
+                let age = today.getFullYear() - dob.getFullYear();
+                const m = today.getMonth() - dob.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+                valid = age >= 16 && age < 120;
+                break;
+            case 'addressLine1':
+                valid = el.value.trim().length >= 4;
+                break;
+            case 'city':
+                valid = el.value.trim().length >= 2;
+                break;
+            case 'postcode':
+                valid = ukPostcodeRegex.test(el.value.trim());
+                break;
+            case 'jobType':
+                valid = el.value !== '';
+                break;
+        }
+
+        setErr(field, !valid);
+        return valid;
+    }
+
+    // Real-time validation
+    ['firstName', 'lastName', 'email', 'addressLine1', 'city'].forEach(f => {
+        const el = document.getElementById(f);
+        if (el) el.addEventListener('blur', () => validateField(f));
+    });
+    document.getElementById('jobType').addEventListener('change', () => validateField('jobType'));
+
+    // Progress steps visual
+    form.addEventListener('input', updateSteps);
+    function updateSteps() {
+        const fields = ['firstName', 'lastName', 'email', 'phone', 'dob', 'addressLine1', 'city', 'postcode', 'jobType'];
+        const filled = fields.filter(f => {
+            const el = document.getElementById(f);
+            return el && el.value.trim() !== '';
+        }).length;
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        [step1, step2, step3].forEach(s => s.className = 'step');
+        if (filled <= 3) step1.classList.add('active');
+        else if (filled <= 6) { step1.classList.add('done'); step2.classList.add('active'); }
+        else { step1.classList.add('done'); step2.classList.add('done'); step3.classList.add('active'); }
+    }
+
+    /* ============ SUBMIT ============ */
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Validate every field
+        const fields = ['firstName', 'lastName', 'email', 'phone', 'dob', 'addressLine1', 'city', 'postcode', 'jobType'];
+        let allValid = true;
+        fields.forEach(f => { if (!validateField(f)) allValid = false; });
+
+        if (!allValid) {
+            showToast('Please fix the highlighted fields before continuing.', 'error');
+            // Scroll to first error
+            const firstErr = document.querySelector('.err-msg.show');
+            if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        // Lock button
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> <span>Creating your account…</span>';
+
+        // Build form data
+        const formData = new FormData();
+        formData.append('firstName', document.getElementById('firstName').value.trim());
+        formData.append('lastName', document.getElementById('lastName').value.trim());
+        formData.append('email', document.getElementById('email').value.trim().toLowerCase());
+        formData.append('phone', '+44' + document.getElementById('phone').value.replace(/\s/g, ''));
+        formData.append('dob', document.getElementById('dob').value);
+        formData.append('addressLine1', document.getElementById('addressLine1').value.trim());
+        formData.append('city', document.getElementById('city').value.trim());
+        formData.append('postcode', document.getElementById('postcode').value.trim().toUpperCase());
+        formData.append('jobType', document.getElementById('jobType').value);
+        if (uploadedFile) formData.append('avatar', uploadedFile);
+
+        try {
+            const res = await fetch('/api/register', { method: 'POST', body: formData });
+            let data = {};
+            try { data = await res.json(); } catch (_) {}
+
+            if (!res.ok) {
+                throw new Error(data.message || 'Registration failed. Please try again.');
+            }
+
+            // Save session
+            const user = data.user || {
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                email: formData.get('email'),
+                jobType: formData.get('jobType')
+            };
+            localStorage.setItem('vertexUser', JSON.stringify(user));
+            localStorage.setItem('vertexToken', data.token || 'demo-token-' + Date.now());
+
+            // Show success animation
+            successName.textContent = user.firstName || 'Friend';
+            successOverlay.classList.add('active');
+            progressBar.style.display = 'block';
+            progressBar.style.animation = 'none';
+            void progressBar.offsetWidth;
+            progressBar.style.animation = 'fillProgress 5s linear forwards';
+
+            // 5 second countdown
+            let seconds = 5;
+            countdownEl.textContent = seconds;
+            const timer = setInterval(() => {
+                seconds--;
+                countdownEl.textContent = seconds;
+                if (seconds <= 0) {
+                    clearInterval(timer);
+                    window.location.href = 'dashboard.html';
+                }
+            }, 1000);
+
+            showToast('Account created successfully!', 'success');
+
+        } catch (err) {
+            console.error(err);
+            showToast(err.message || 'Something went wrong. Please try again.', 'error');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> <span>Create My Account</span>';
+        }
+    });
+
+    /* ============ INIT ============ */
+    updateSteps();
+</script>
+</body>
+</html>
