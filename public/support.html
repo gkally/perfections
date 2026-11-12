@@ -1,0 +1,173 @@
+<!-- ============================================================
+     SUPPORT.HTML
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Support | Vertex Talent — We're Here to Help</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #0F2B46; --primary-dark: #081C2F; --primary-soft: #244B6B;
+            --secondary: #00A6A6; --secondary-glow: #2DD4BF; --accent: #FF7B54;
+            --gold: #FFC857; --dark: #0A1A2B; --gray: #4F6F8F; --white: #FFFFFF;
+            --danger: #ef4444; --success: #10b981; --whatsapp: #25D366;
+            --shadow-soft: 0 20px 35px -12px rgba(0,0,0,0.06);
+            --shadow-bold: 0 28px 45px -12px rgba(0,0,0,0.18);
+        }
+        body { font-family: 'Inter', sans-serif; background: #F7FAFF; color: var(--dark); line-height: 1.5; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 28px; }
+
+        .dash-header { background: rgba(255,255,255,0.95); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,166,166,0.15); position: sticky; top: 0; z-index: 1000; padding: 14px 0; }
+        .dash-header .container { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; max-width: 1400px; }
+        .dash-logo h1 { font-size: 22px; font-weight: 800; background: linear-gradient(125deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; display: flex; align-items: center; gap: 8px; }
+        .dash-logo span { font-size: 10.5px; color: var(--gray); font-weight: 500; display: block; }
+        .header-links { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .header-links a { text-decoration: none; color: var(--gray); font-size: 13.5px; font-weight: 500; padding: 8px 16px; border-radius: 50px; transition: 0.2s; }
+        .header-links a:hover, .header-links a.active { background: var(--secondary); color: white; }
+
+        .support-hero { background: linear-gradient(120deg, var(--primary), var(--primary-soft)); padding: 70px 0; text-align: center; color: white; }
+        .support-hero h1 { font-size: 42px; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
+        .support-hero p { font-size: 17px; color: rgba(255,255,255,0.8); max-width: 500px; margin: 0 auto; }
+
+        .support-main { padding: 60px 0; }
+        .support-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 50px; }
+        .support-card { background: white; border-radius: 24px; padding: 32px 28px; border: 1.5px solid #e8eef5; text-align: center; transition: 0.3s; text-decoration: none; color: inherit; }
+        .support-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-soft); border-color: rgba(0,166,166,0.3); }
+        .support-card .s-icon { width: 70px; height: 70px; border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 18px; }
+        .support-card .s-icon.wa { background: linear-gradient(135deg, #25D366, #128C7E); color: white; }
+        .support-card .s-icon.chat { background: linear-gradient(135deg, var(--secondary), var(--secondary-glow)); color: white; }
+        .support-card .s-icon.email { background: linear-gradient(135deg, var(--accent), var(--accent-glow)); color: white; }
+        .support-card h3 { font-size: 18px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
+        .support-card p { font-size: 14px; color: var(--gray); margin-bottom: 14px; }
+        .support-card .s-cta { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 700; color: var(--secondary); }
+
+        .faq-section { background: white; border-radius: 24px; padding: 40px; border: 1.5px solid #e8eef5; }
+        .faq-section h2 { font-size: 26px; font-weight: 800; color: var(--primary); margin-bottom: 24px; text-align: center; }
+        .faq-item { border-bottom: 1px solid #e8eef5; padding: 18px 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-q { display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 700; font-size: 15px; color: var(--primary); }
+        .faq-q i { color: var(--secondary); transition: 0.3s; }
+        .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; font-size: 14px; color: var(--gray); line-height: 1.6; }
+        .faq-item.open .faq-a { max-height: 300px; padding-top: 10px; }
+        .faq-item.open .faq-q i { transform: rotate(180deg); }
+
+        .whatsapp-float { position: fixed; bottom: 28px; right: 28px; z-index: 999; }
+        .whatsapp-btn { width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, #25D366, #128C7E); display: flex; align-items: center; justify-content: center; color: white; font-size: 27px; text-decoration: none; box-shadow: 0 10px 30px rgba(37,211,102,0.4); border: 3px solid white; transition: 0.3s; }
+        .whatsapp-btn:hover { transform: scale(1.1); }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 18px; }
+            .support-grid { grid-template-columns: 1fr; }
+            .support-hero h1 { font-size: 30px; }
+            .faq-section { padding: 28px 20px; }
+            .header-links a:not(.user-chip) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="dash-header">
+    <div class="container">
+        <div class="dash-logo">
+            <h1><i class="fas fa-bolt"></i> Vertex Talent</h1>
+            <span>SUPPORT CENTER</span>
+        </div>
+        <div class="header-links">
+            <a href="dashboard.html"><i class="fas fa-house"></i> Dashboard</a>
+            <a href="jobs.html"><i class="fas fa-briefcase"></i> Jobs</a>
+            <a href="chat.html"><i class="fas fa-comments"></i> Chat</a>
+            <a href="support.html" class="active"><i class="fas fa-headset"></i> Support</a>
+        </div>
+    </div>
+</header>
+
+<section class="support-hero">
+    <div class="container">
+        <h1>How can we help? 💬</h1>
+        <p>Our UK-based team is available 24/7. Reach us by WhatsApp, live chat, or email — whichever suits you best.</p>
+    </div>
+</section>
+
+<main class="support-main">
+    <div class="container">
+        <div class="support-grid">
+            <a href="https://wa.me/447536578775?text=Hi%20Vertex%20Talent%2C%20I%20need%20support!" target="_blank" class="support-card">
+                <div class="s-icon wa"><i class="fab fa-whatsapp"></i></div>
+                <h3>WhatsApp Us</h3>
+                <p>Fastest response. Chat with a real recruiter in seconds on +44 7536 578775.</p>
+                <span class="s-cta">Open WhatsApp <i class="fas fa-arrow-right"></i></span>
+            </a>
+            <a href="chat.html" class="support-card">
+                <div class="s-icon chat"><i class="fas fa-comments"></i></div>
+                <h3>Live Chat</h3>
+                <p>Instant messaging with our support team. Available 24 hours a day, 7 days a week.</p>
+                <span class="s-cta">Start chatting <i class="fas fa-arrow-right"></i></span>
+            </a>
+            <a href="mailto:hello@vertextalent.co.uk" class="support-card">
+                <div class="s-icon email"><i class="fas fa-envelope"></i></div>
+                <h3>Email Support</h3>
+                <p>Send us a detailed message and we'll reply within 2 working hours.</p>
+                <span class="s-cta">Send email <i class="fas fa-arrow-right"></i></span>
+            </a>
+        </div>
+
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this)">How do I apply for a job? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-a">Simply go to the Jobs page, search or filter for roles that match your skills, click on a job to view the details, and hit "Apply on Employer Site". You can also send us a WhatsApp message with the job title and we'll fast-track your application.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this)">Is Vertex Talent free for job seekers? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-a">Yes, 100% free. We never charge candidates for finding them a role. Our fees are paid by employers only.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this)">How long does it take to get matched? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-a">Most candidates receive their first interview offer within 5–10 working days, depending on the role, industry, and your availability. Our fastest placement was within 48 hours!</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this)">Can you help with CV writing? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-a">Absolutely. We offer free CV reviews and optimisation. Send your CV to hello@vertextalent.co.uk or upload it via your profile and our specialists will get back within 24 hours.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this)">Do you place workers outside the UK? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-a">We specialise in UK placements but also support international candidates relocating to the UK. Contact us on WhatsApp for details.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this)">How do I reset my PIN? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-a">Click "Forgot PIN?" on the login page, or message us on WhatsApp for a secure reset link. We'll verify your identity and get you back in within minutes.</div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="whatsapp-float">
+    <a href="https://wa.me/447536578775" target="_blank" class="whatsapp-btn" title="WhatsApp Support"><i class="fab fa-whatsapp"></i></a>
+</div>
+
+<script>
+    function toggleFaq(el) {
+        const item = el.parentElement;
+        item.classList.toggle('open');
+    }
+    try {
+        const user = JSON.parse(localStorage.getItem('vertexUser')) || {};
+        const name = (user.firstName || 'Friend') + (user.lastName ? ' ' + user.lastName : '');
+        // could update header chip if present
+    } catch (e) {}
+</script>
+</body>
+</html>
