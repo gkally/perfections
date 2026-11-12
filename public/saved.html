@@ -1,0 +1,176 @@
+<!-- ============================================================
+     SAVED.HTML
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Saved Jobs | Vertex Talent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #0F2B46; --primary-soft: #244B6B; --secondary: #00A6A6;
+            --accent: #FF7B54; --gold: #FFC857; --dark: #0A1A2B; --gray: #4F6F8F;
+            --success: #10b981; --danger: #ef4444; --whatsapp: #25D366;
+            --shadow-soft: 0 20px 35px -12px rgba(0,0,0,0.06);
+            --shadow-bold: 0 28px 45px -12px rgba(0,0,0,0.18);
+        }
+        body { font-family: 'Inter', sans-serif; background: #F7FAFF; color: var(--dark); line-height: 1.5; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 28px; }
+
+        .dash-header { background: rgba(255,255,255,0.95); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,166,166,0.15); position: sticky; top: 0; z-index: 1000; padding: 14px 0; }
+        .dash-header .container { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; max-width: 1400px; }
+        .dash-logo h1 { font-size: 22px; font-weight: 800; background: linear-gradient(125deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; display: flex; align-items: center; gap: 8px; }
+        .dash-logo span { font-size: 10.5px; color: var(--gray); font-weight: 500; display: block; }
+        .header-links { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .header-links a { text-decoration: none; color: var(--gray); font-size: 13.5px; font-weight: 500; padding: 8px 16px; border-radius: 50px; transition: 0.2s; }
+        .header-links a:hover, .header-links a.active { background: var(--secondary); color: white; }
+
+        .page-head { background: linear-gradient(120deg, var(--primary), var(--primary-soft)); padding: 50px 0; color: white; }
+        .page-head h1 { font-size: 36px; font-weight: 800; letter-spacing: -0.8px; margin-bottom: 8px; }
+        .page-head p { font-size: 15px; color: rgba(255,255,255,0.8); }
+
+        .main-content { padding: 40px 0 60px; }
+        .saved-list { display: flex; flex-direction: column; gap: 14px; }
+        .saved-card { background: white; border-radius: 20px; border: 1.5px solid #e8eef5; padding: 22px 24px; display: flex; gap: 18px; align-items: center; transition: 0.25s; }
+        .saved-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-soft); border-color: rgba(0,166,166,0.3); }
+        .saved-logo { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: white; flex-shrink: 0; }
+        .saved-info { flex: 1; min-width: 0; }
+        .saved-info h3 { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 3px; }
+        .saved-info .company { font-size: 13px; color: var(--gray); font-weight: 600; margin-bottom: 6px; }
+        .saved-info .meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--gray); }
+        .saved-info .meta span { display: flex; align-items: center; gap: 4px; }
+        .saved-actions { display: flex; gap: 8px; align-items: center; }
+        .saved-actions .remove-btn { width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid #e2e8f0; background: white; display: flex; align-items: center; justify-content: center; color: var(--gray); cursor: pointer; transition: 0.2s; font-size: 13px; }
+        .saved-actions .remove-btn:hover { border-color: var(--danger); color: var(--danger); background: rgba(239,68,68,0.05); }
+        .saved-actions .apply-btn { padding: 10px 22px; border-radius: 50px; background: var(--primary); color: white; font-size: 13px; font-weight: 600; text-decoration: none; transition: 0.2s; }
+        .saved-actions .apply-btn:hover { background: var(--secondary); transform: translateY(-2px); }
+
+        .empty-state { text-align: center; padding: 70px 24px; background: white; border-radius: 24px; border: 1.5px solid #e8eef5; }
+        .empty-state i { font-size: 48px; color: #cbd5e1; margin-bottom: 16px; }
+        .empty-state h3 { font-size: 20px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
+        .empty-state p { font-size: 14px; color: var(--gray); margin-bottom: 22px; }
+        .empty-state a { padding: 12px 28px; border-radius: 50px; background: var(--secondary); color: white; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; }
+
+        .toast { position: fixed; top: 24px; right: 24px; z-index: 10001; padding: 14px 22px; border-radius: 14px; background: white; box-shadow: var(--shadow-bold); display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; transform: translateX(400px); transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); border-left: 4px solid var(--success); }
+        .toast.show { transform: translateX(0); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast i { font-size: 18px; }
+        .toast.success i { color: var(--success); }
+        .toast.error i { color: var(--danger); }
+
+        .whatsapp-float { position: fixed; bottom: 28px; right: 28px; z-index: 999; }
+        .whatsapp-btn { width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, #25D366, #128C7E); display: flex; align-items: center; justify-content: center; color: white; font-size: 27px; text-decoration: none; box-shadow: 0 10px 30px rgba(37,211,102,0.4); border: 3px solid white; transition: 0.3s; }
+        .whatsapp-btn:hover { transform: scale(1.1); }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 18px; }
+            .saved-card { flex-wrap: wrap; }
+            .saved-actions { margin-left: auto; }
+            .header-links a:not(.user-chip) { display: none; }
+            .page-head h1 { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="dash-header">
+    <div class="container">
+        <div class="dash-logo">
+            <h1><i class="fas fa-bolt"></i> Vertex Talent</h1>
+            <span>SAVED JOBS</span>
+        </div>
+        <div class="header-links">
+            <a href="dashboard.html"><i class="fas fa-house"></i> Dashboard</a>
+            <a href="jobs.html"><i class="fas fa-briefcase"></i> Jobs</a>
+            <a href="saved.html" class="active"><i class="fas fa-bookmark"></i> Saved</a>
+            <a href="chat.html"><i class="fas fa-comments"></i> Chat</a>
+        </div>
+    </div>
+</header>
+
+<section class="page-head">
+    <div class="container">
+        <h1>Saved Jobs</h1>
+        <p>Your bookmarked roles — ready to apply when you are.</p>
+    </div>
+</section>
+
+<main class="main-content">
+    <div class="container">
+        <div class="saved-list" id="savedList"></div>
+    </div>
+</main>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Success</span></div>
+
+<div class="whatsapp-float">
+    <a href="https://wa.me/447536578775" target="_blank" class="whatsapp-btn" title="WhatsApp Support"><i class="fab fa-whatsapp"></i></a>
+</div>
+
+<script>
+    let savedJobs = [
+        { id: 1, title: 'Senior Software Engineer', company: 'TechNova Ltd', location: 'London, UK', salary: '£65k–£85k', color: 'linear-gradient(135deg,#0ea5e9,#38bdf8)' },
+        { id: 2, title: 'Data Analyst', company: 'FinData Solutions', location: 'Edinburgh, UK', salary: '£38k–£48k', color: 'linear-gradient(135deg,#8b5cf6,#a78bfa)' },
+        { id: 3, title: 'Registered Nurse', company: 'NHS Trust', location: 'Bristol, UK', salary: '£32k–£42k', color: 'linear-gradient(135deg,#10b981,#34d399)' }
+    ];
+
+    const savedList = document.getElementById('savedList');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+    let toastTimer;
+
+    function showToast(msg, type = 'success') {
+        clearTimeout(toastTimer);
+        toastMsg.textContent = msg;
+        toast.className = 'toast show ' + type;
+        toast.querySelector('i').className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    function renderSaved() {
+        if (!savedJobs.length) {
+            savedList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-bookmark"></i>
+                    <h3>No saved jobs yet</h3>
+                    <p>Browse live jobs and click the bookmark icon to save roles for later.</p>
+                    <a href="jobs.html"><i class="fas fa-magnifying-glass"></i> Browse Jobs</a>
+                </div>
+            `;
+            return;
+        }
+
+        savedList.innerHTML = savedJobs.map(j => `
+            <div class="saved-card">
+                <div class="saved-logo" style="background:${j.color};">${j.company.charAt(0)}</div>
+                <div class="saved-info">
+                    <h3>${j.title}</h3>
+                    <div class="company">${j.company}</div>
+                    <div class="meta">
+                        <span><i class="fas fa-map-marker-alt"></i> ${j.location}</span>
+                        <span><i class="fas fa-sterling-sign"></i> ${j.salary}</span>
+                    </div>
+                </div>
+                <div class="saved-actions">
+                    <button class="remove-btn" onclick="removeSaved(${j.id})" title="Remove"><i class="fas fa-trash"></i></button>
+                    <a href="jobs.html" class="apply-btn">Apply</a>
+                </div>
+            </div>
+        `).join('');
+    }
+    renderSaved();
+
+    function removeSaved(id) {
+        savedJobs = savedJobs.filter(j => j.id !== id);
+        renderSaved();
+        showToast('Job removed from saved list', 'success');
+    }
+</script>
+</body>
+</html>
