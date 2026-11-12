@@ -1,0 +1,1217 @@
+<!-- ============================================================
+     ADMIN.HTML — Vertex Talent Admin Control Panel
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Admin Panel | Vertex Talent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #0F2B46; --primary-dark: #081C2F; --primary-soft: #244B6B;
+            --secondary: #00A6A6; --secondary-glow: #2DD4BF; --accent: #FF7B54;
+            --gold: #FFC857; --dark: #0A1A2B; --gray: #4F6F8F; --white: #FFFFFF;
+            --danger: #ef4444; --success: #10b981; --warning: #f59e0b;
+            --shadow-soft: 0 20px 35px -12px rgba(0,0,0,0.06);
+            --shadow-bold: 0 28px 45px -12px rgba(0,0,0,0.18);
+        }
+        body { font-family: 'Inter', sans-serif; background: #F0F4F9; color: var(--dark); line-height: 1.5; }
+
+        /* ---- LOGIN SCREEN ---- */
+        .admin-login-screen {
+            position: fixed; inset: 0; z-index: 9999;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            display: flex; align-items: center; justify-content: center; padding: 24px;
+        }
+        .admin-login-box {
+            background: white; border-radius: 28px; padding: 44px; max-width: 420px; width: 100%;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.5);
+            text-align: center; animation: fadeUp 0.5s ease;
+        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .admin-login-box .lock-icon {
+            width: 76px; height: 76px; border-radius: 24px; margin: 0 auto 24px;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            display: flex; align-items: center; justify-content: center; color: white; font-size: 30px;
+            box-shadow: 0 12px 30px rgba(0,166,166,0.35);
+        }
+        .admin-login-box h1 { font-size: 26px; font-weight: 800; color: var(--primary); margin-bottom: 6px; }
+        .admin-login-box p { font-size: 14px; color: var(--gray); margin-bottom: 28px; }
+        .admin-field { text-align: left; margin-bottom: 16px; }
+        .admin-field label { display: block; font-size: 12.5px; font-weight: 600; color: var(--primary); margin-bottom: 6px; }
+        .admin-field input {
+            width: 100%; padding: 14px 16px; border: 1.5px solid #e2e8f0; border-radius: 14px;
+            font-size: 14.5px; font-family: inherit; background: #FAFCFF; outline: none; transition: 0.2s;
+        }
+        .admin-field input:focus { border-color: var(--secondary); background: white; box-shadow: 0 0 0 4px rgba(0,166,166,0.1); }
+        .admin-login-btn {
+            width: 100%; padding: 15px; border: none; border-radius: 14px; margin-top: 10px;
+            background: linear-gradient(125deg, var(--secondary), var(--primary)); color: white;
+            font-size: 15.5px; font-weight: 700; font-family: inherit; cursor: pointer;
+            transition: 0.25s; display: flex; align-items: center; justify-content: center; gap: 9px;
+            box-shadow: 0 12px 25px -6px rgba(0,166,166,0.4);
+        }
+        .admin-login-btn:hover { transform: translateY(-2px); background: linear-gradient(125deg, var(--accent), var(--primary)); }
+        .admin-login-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+        .login-error {
+            background: rgba(239,68,68,0.1); color: var(--danger); padding: 12px;
+            border-radius: 10px; font-size: 13px; font-weight: 600; margin-bottom: 16px;
+            display: none;
+        }
+        .login-error.show { display: block; }
+        .back-home { display: inline-block; margin-top: 20px; font-size: 13px; color: var(--gray); text-decoration: none; }
+        .back-home:hover { color: var(--secondary); }
+
+        /* ---- ADMIN DASHBOARD ---- */
+        .admin-app { display: none; }
+        .admin-app.active { display: block; }
+
+        .admin-sidebar {
+            position: fixed; left: 0; top: 0; bottom: 0; width: 250px;
+            background: linear-gradient(180deg, var(--primary-dark), var(--primary));
+            color: white; padding: 24px 16px; z-index: 100; overflow-y: auto;
+        }
+        .admin-brand { padding: 0 10px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .admin-brand h2 { font-size: 19px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .admin-brand h2 i { color: var(--secondary-glow); }
+        .admin-brand span { font-size: 10.5px; color: rgba(255,255,255,0.5); letter-spacing: 0.5px; }
+        .admin-nav { display: flex; flex-direction: column; gap: 4px; }
+        .admin-nav-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+            border-radius: 12px; color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 500;
+            text-decoration: none; cursor: pointer; transition: 0.2s; border: none; background: none;
+            font-family: inherit; width: 100%; text-align: left;
+        }
+        .admin-nav-item:hover { background: rgba(255,255,255,0.08); color: white; }
+        .admin-nav-item.active { background: var(--secondary); color: white; box-shadow: 0 6px 16px rgba(0,166,166,0.3); }
+        .admin-nav-item i { width: 18px; text-align: center; font-size: 15px; }
+        .admin-nav-item .nav-badge {
+            margin-left: auto; background: var(--accent); color: white; font-size: 10.5px;
+            font-weight: 700; padding: 2px 8px; border-radius: 50px; min-width: 20px; text-align: center;
+        }
+        .admin-nav-item .nav-badge.hidden { display: none; }
+        .admin-sidebar-footer {
+            position: absolute; bottom: 20px; left: 16px; right: 16px;
+            padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .admin-sidebar-footer button {
+            width: 100%; padding: 11px; border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px; background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.85);
+            font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .admin-sidebar-footer button:hover { background: var(--danger); border-color: var(--danger); color: white; }
+
+        .admin-main { margin-left: 250px; padding: 28px 32px; min-height: 100vh; }
+        .admin-topbar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 28px; flex-wrap: wrap; gap: 14px;
+        }
+        .admin-topbar h1 { font-size: 26px; font-weight: 800; color: var(--primary); }
+        .admin-topbar p { font-size: 13.5px; color: var(--gray); }
+        .admin-topbar-actions { display: flex; gap: 10px; align-items: center; }
+        .refresh-btn {
+            padding: 10px 18px; border-radius: 50px; border: 1.5px solid #e2e8f0;
+            background: white; font-family: inherit; font-size: 13px; font-weight: 600;
+            color: var(--gray); cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 7px;
+        }
+        .refresh-btn:hover { border-color: var(--secondary); color: var(--secondary); }
+
+        /* Views */
+        .admin-view { display: none; }
+        .admin-view.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Stats grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 28px; }
+        .stat-card {
+            background: white; border-radius: 20px; padding: 24px; border: 1.5px solid #e8eef5;
+            display: flex; align-items: center; gap: 16px; transition: 0.25s;
+        }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-soft); }
+        .stat-icon {
+            width: 54px; height: 54px; border-radius: 16px; display: flex;
+            align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;
+        }
+        .stat-icon.teal { background: rgba(0,166,166,0.12); color: var(--secondary); }
+        .stat-icon.coral { background: rgba(255,123,84,0.12); color: var(--accent); }
+        .stat-icon.gold { background: rgba(255,200,87,0.2); color: #d97706; }
+        .stat-icon.navy { background: rgba(15,43,70,0.1); color: var(--primary); }
+        .stat-info .val { font-size: 26px; font-weight: 800; color: var(--primary); line-height: 1.1; }
+        .stat-info .lbl { font-size: 12.5px; color: var(--gray); font-weight: 500; }
+
+        /* Cards */
+        .panel-card {
+            background: white; border-radius: 20px; border: 1.5px solid #e8eef5;
+            padding: 24px; margin-bottom: 24px;
+        }
+        .panel-card-head {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 18px; flex-wrap: wrap; gap: 12px;
+        }
+        .panel-card-head h3 { font-size: 17px; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 9px; }
+        .panel-card-head h3 i { color: var(--secondary); font-size: 15px; }
+
+        /* Search & filters */
+        .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .filter-bar input, .filter-bar select {
+            padding: 10px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+            font-family: inherit; font-size: 13.5px; background: #FAFCFF; outline: none; transition: 0.2s;
+        }
+        .filter-bar input:focus, .filter-bar select:focus { border-color: var(--secondary); background: white; }
+        .filter-bar input { min-width: 240px; }
+
+        /* Table */
+        .data-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+        .data-table th {
+            text-align: left; padding: 12px 14px; font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray);
+            border-bottom: 1.5px solid #e8eef5;
+        }
+        .data-table td { padding: 14px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        .data-table tr:hover td { background: #FAFCFF; }
+        .user-cell { display: flex; align-items: center; gap: 12px; }
+        .user-cell img, .user-cell .avatar-fallback {
+            width: 38px; height: 38px; border-radius: 50%; object-fit: cover;
+            border: 2px solid var(--secondary); flex-shrink: 0;
+        }
+        .user-cell .avatar-fallback {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+        .user-cell .uinfo strong { display: block; color: var(--primary); font-size: 13.5px; }
+        .user-cell .uinfo span { color: var(--gray); font-size: 12px; }
+
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px;
+            border-radius: 50px; font-size: 11.5px; font-weight: 700;
+        }
+        .status-pill.active { background: rgba(16,185,129,0.12); color: var(--success); }
+        .status-pill.suspended { background: rgba(245,158,11,0.15); color: var(--warning); }
+        .status-pill.banned { background: rgba(239,68,68,0.12); color: var(--danger); }
+        .status-pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+        .action-btns { display: flex; gap: 6px; }
+        .action-btns button {
+            width: 34px; height: 34px; border-radius: 9px; border: 1.5px solid #e2e8f0;
+            background: white; color: var(--gray); cursor: pointer; transition: 0.2s; font-size: 13px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .action-btns button:hover { border-color: var(--secondary); color: var(--secondary); }
+        .action-btns button.danger:hover { border-color: var(--danger); color: var(--danger); }
+
+        /* Messages */
+        .msg-list { display: flex; flex-direction: column; gap: 10px; }
+        .msg-item {
+            padding: 16px 18px; border-radius: 14px; border: 1.5px solid #e8eef5;
+            cursor: pointer; transition: 0.2s; background: white;
+        }
+        .msg-item:hover { border-color: var(--secondary); background: #FAFCFF; }
+        .msg-item.unread { border-left: 4px solid var(--accent); background: rgba(255,123,84,0.03); }
+        .msg-item .msg-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px; }
+        .msg-item .msg-from { font-weight: 700; color: var(--primary); font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .msg-item .msg-time { font-size: 11.5px; color: var(--gray); }
+        .msg-item .msg-subject { font-size: 13.5px; color: var(--gray); margin-bottom: 4px; }
+        .msg-item .msg-preview { font-size: 13px; color: var(--gray); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 10002; background: rgba(10,26,43,0.7);
+            backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 24px;
+            overflow-y: auto;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: white; border-radius: 24px; padding: 32px; max-width: 560px; width: 100%;
+            max-height: 90vh; overflow-y: auto; animation: modalIn 0.3s ease; position: relative;
+        }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .modal-box.wide { max-width: 720px; }
+        .modal-close {
+            position: absolute; top: 18px; right: 18px; width: 34px; height: 34px;
+            border-radius: 50%; border: none; background: #f1f5f9; color: var(--gray);
+            font-size: 15px; cursor: pointer; transition: 0.2s;
+        }
+        .modal-close:hover { background: var(--danger); color: white; }
+        .modal-box h2 { font-size: 21px; font-weight: 800; color: var(--primary); margin-bottom: 6px; }
+        .modal-box .modal-sub { font-size: 13px; color: var(--gray); margin-bottom: 22px; }
+        .modal-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+        .modal-form .form-row.full { grid-template-columns: 1fr; }
+        .modal-form label { display: block; font-size: 12px; font-weight: 600; color: var(--primary); margin-bottom: 5px; }
+        .modal-form input, .modal-form select, .modal-form textarea {
+            width: 100%; padding: 11px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+            font-family: inherit; font-size: 13.5px; background: #FAFCFF; outline: none; transition: 0.2s;
+        }
+        .modal-form input:focus, .modal-form select:focus, .modal-form textarea:focus {
+            border-color: var(--secondary); background: white;
+        }
+        .modal-form textarea { resize: vertical; min-height: 110px; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; flex-wrap: wrap; }
+        .modal-actions button {
+            padding: 11px 24px; border-radius: 10px; font-family: inherit; font-size: 13.5px;
+            font-weight: 600; cursor: pointer; transition: 0.2s; border: none;
+        }
+        .btn-cancel { background: #f1f5f9; color: var(--gray); }
+        .btn-cancel:hover { background: #e2e8f0; }
+        .btn-save { background: var(--secondary); color: white; }
+        .btn-save:hover { background: var(--secondary-glow); transform: translateY(-1px); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-danger:hover { background: #dc2626; }
+
+        /* Chat thread */
+        .thread { display: flex; flex-direction: column; gap: 12px; max-height: 380px; overflow-y: auto; padding: 8px 4px; }
+        .thread-msg { padding: 12px 16px; border-radius: 14px; font-size: 13.5px; max-width: 85%; line-height: 1.5; }
+        .thread-msg.from-user { background: #F1F5F9; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .thread-msg.from-admin { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .thread-msg .meta { font-size: 10.5px; opacity: 0.7; margin-top: 4px; }
+
+        /* Empty state */
+        .empty-state { text-align: center; padding: 50px 24px; color: var(--gray); }
+        .empty-state i { font-size: 44px; color: #cbd5e1; margin-bottom: 12px; }
+        .empty-state p { font-size: 14px; }
+
+        /* Toast */
+        .toast {
+            position: fixed; top: 24px; right: 24px; z-index: 10001; padding: 14px 22px;
+            border-radius: 14px; background: white; box-shadow: var(--shadow-bold);
+            display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600;
+            transform: translateX(400px); transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-left: 4px solid var(--success);
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast i { font-size: 18px; }
+        .toast.success i { color: var(--success); }
+        .toast.error i { color: var(--danger); }
+
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .admin-sidebar { transform: translateX(-100%); transition: 0.3s; }
+            .admin-sidebar.open { transform: translateX(0); }
+            .admin-main { margin-left: 0; padding: 20px 16px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .data-table { font-size: 12px; }
+            .data-table th, .data-table td { padding: 10px 8px; }
+            .modal-form .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============ LOGIN SCREEN ============ -->
+<div class="admin-login-screen" id="loginScreen">
+    <div class="admin-login-box">
+        <div class="lock-icon"><i class="fas fa-shield-halved"></i></div>
+        <h1>Admin Portal</h1>
+        <p>Vertex Talent control centre</p>
+
+        <div class="login-error" id="loginError"><i class="fas fa-exclamation-circle"></i> <span id="loginErrorText"></span></div>
+
+        <form id="adminLoginForm">
+            <div class="admin-field">
+                <label>Username</label>
+                <input type="text" id="adminUser" placeholder="admin" autocomplete="username" required>
+            </div>
+            <div class="admin-field">
+                <label>Password</label>
+                <input type="password" id="adminPass" placeholder="Enter admin password" autocomplete="current-password" required>
+            </div>
+            <button type="submit" class="admin-login-btn" id="adminLoginBtn">
+                <i class="fas fa-arrow-right-to-bracket"></i> <span>Sign In</span>
+            </button>
+        </form>
+
+        <a href="/dashboard" class="back-home"><i class="fas fa-arrow-left"></i> Back to site</a>
+    </div>
+</div>
+
+<!-- ============ ADMIN APP ============ -->
+<div class="admin-app" id="adminApp">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="admin-brand">
+            <h2><i class="fas fa-bolt"></i> Vertex Admin</h2>
+            <span>CONTROL PANEL</span>
+        </div>
+        <nav class="admin-nav">
+            <button class="admin-nav-item active" data-view="overview"><i class="fas fa-gauge-high"></i> Overview</button>
+            <button class="admin-nav-item" data-view="users"><i class="fas fa-users"></i> Users <span class="nav-badge" id="usersBadge">0</span></button>
+            <button class="admin-nav-item" data-view="messages"><i class="fas fa-envelope"></i> Messages <span class="nav-badge hidden" id="msgBadge">0</span></button>
+            <button class="admin-nav-item" data-view="broadcast"><i class="fas fa-bullhorn"></i> Broadcast</button>
+            <button class="admin-nav-item" data-view="jobs"><i class="fas fa-briefcase"></i> Jobs API</button>
+        </nav>
+        <div class="admin-sidebar-footer">
+            <button onclick="adminLogout()"><i class="fas fa-arrow-right-from-bracket"></i> Logout</button>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="admin-main">
+        <div class="admin-topbar">
+            <div>
+                <h1 id="viewTitle">Overview</h1>
+                <p id="viewSubtitle">Welcome back, Admin — here's your platform snapshot.</p>
+            </div>
+            <div class="admin-topbar-actions">
+                <button class="refresh-btn" onclick="refreshAll()"><i class="fas fa-rotate"></i> Refresh</button>
+            </div>
+        </div>
+
+        <!-- VIEW: OVERVIEW -->
+        <div class="admin-view active" id="view-overview">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon teal"><i class="fas fa-users"></i></div>
+                    <div class="stat-info"><div class="val" id="statTotalUsers">—</div><div class="lbl">Total Users</div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon coral"><i class="fas fa-user-check"></i></div>
+                    <div class="stat-info"><div class="val" id="statActiveUsers">—</div><div class="lbl">Active Users</div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon gold"><i class="fas fa-envelope"></i></div>
+                    <div class="stat-info"><div class="val" id="statUnreadMsgs">—</div><div class="lbl">Unread Messages</div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon navy"><i class="fas fa-user-plus"></i></div>
+                    <div class="stat-info"><div class="val" id="statNewToday">—</div><div class="lbl">New Today</div></div>
+                </div>
+            </div>
+
+            <div class="panel-card">
+                <div class="panel-card-head">
+                    <h3><i class="fas fa-chart-pie"></i> Users by Job Type</h3>
+                </div>
+                <div id="jobTypeBreakdown"><div class="empty-state"><i class="fas fa-chart-pie"></i><p>Loading…</p></div></div>
+            </div>
+
+            <div class="panel-card">
+                <div class="panel-card-head">
+                    <h3><i class="fas fa-clock-rotate-left"></i> Recent Users</h3>
+                    <button class="refresh-btn" onclick="switchView('users')">View all</button>
+                </div>
+                <div id="recentUsersTable"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading…</p></div></div>
+            </div>
+        </div>
+
+        <!-- VIEW: USERS -->
+        <div class="admin-view" id="view-users">
+            <div class="panel-card">
+                <div class="panel-card-head">
+                    <h3><i class="fas fa-users"></i> All Users</h3>
+                    <div class="filter-bar">
+                        <input type="text" id="userSearch" placeholder="Search name, email, phone…" oninput="debounceUserSearch()">
+                        <select id="userStatusFilter" onchange="loadUsers()">
+                            <option value="">All statuses</option>
+                            <option value="active">Active</option>
+                            <option value="suspended">Suspended</option>
+                            <option value="banned">Banned</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="usersTable"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading users…</p></div></div>
+            </div>
+        </div>
+
+        <!-- VIEW: MESSAGES -->
+        <div class="admin-view" id="view-messages">
+            <div class="panel-card">
+                <div class="panel-card-head">
+                    <h3><i class="fas fa-envelope"></i> Messages</h3>
+                    <div class="filter-bar">
+                        <select id="msgFilter" onchange="loadMessages()">
+                            <option value="all">All messages</option>
+                            <option value="unread">Unread only</option>
+                            <option value="from-users">From users</option>
+                            <option value="sent-by-admin">Sent by admin</option>
+                        </select>
+                        <button class="refresh-btn" onclick="openComposeMessage()"><i class="fas fa-pen"></i> New Message</button>
+                    </div>
+                </div>
+                <div id="messagesList"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading messages…</p></div></div>
+            </div>
+        </div>
+
+        <!-- VIEW: BROADCAST -->
+        <div class="admin-view" id="view-broadcast">
+            <div class="panel-card">
+                <div class="panel-card-head">
+                    <h3><i class="fas fa-bullhorn"></i> Broadcast to All Users</h3>
+                </div>
+                <form id="broadcastForm" class="modal-form">
+                    <div class="form-row full">
+                        <div>
+                            <label>Subject</label>
+                            <input type="text" id="broadcastSubject" placeholder="e.g. Important update from Vertex Talent" required>
+                        </div>
+                    </div>
+                    <div class="form-row full">
+                        <div>
+                            <label>Message</label>
+                            <textarea id="broadcastBody" placeholder="Type your broadcast message…" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-save" id="broadcastBtn"><i class="fas fa-paper-plane"></i> Send Broadcast</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- VIEW: JOBS API -->
+        <div class="admin-view" id="view-jobs">
+            <div class="panel-card">
+                <div class="panel-card-head">
+                    <h3><i class="fas fa-briefcase"></i> Jobs API Status</h3>
+                </div>
+                <p style="font-size:14px;color:var(--gray);margin-bottom:16px;">
+                    The jobs board uses the <strong>Remotive API</strong> (free, no registration required).
+                    Live UK/remote jobs are pulled directly from the public API and proxied through
+                    <code style="background:#f1f5f9;padding:2px 8px;border-radius:6px;">/api/jobs</code>.
+                </p>
+                <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                    <a href="/jobs" class="btn-save" style="padding:11px 22px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;color:white;background:var(--secondary);font-weight:600;font-size:13.5px;"><i class="fas fa-arrow-up-right-from-square"></i> Open Jobs Board</a>
+                    <button class="btn-cancel" onclick="testJobsApi()" style="padding:11px 22px;border-radius:10px;"><i class="fas fa-flask"></i> Test API</button>
+                </div>
+                <div id="jobsApiResult" style="margin-top:18px;"></div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- ============ MODALS ============ -->
+
+<!-- User detail modal -->
+<div class="modal-overlay" id="userModal">
+    <div class="modal-box wide">
+        <button class="modal-close" onclick="closeModal('userModal')"><i class="fas fa-xmark"></i></button>
+        <h2 id="userModalTitle">User Details</h2>
+        <p class="modal-sub" id="userModalSub">Manage this user's account</p>
+        <div id="userModalContent"></div>
+    </div>
+</div>
+
+<!-- Compose message modal -->
+<div class="modal-overlay" id="composeModal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('composeModal')"><i class="fas fa-xmark"></i></button>
+        <h2>New Message</h2>
+        <p class="modal-sub">Send a message to a specific user</p>
+        <form id="composeForm" class="modal-form">
+            <div class="form-row full">
+                <div>
+                    <label>Recipient (name or email)</label>
+                    <select id="composeRecipient" required></select>
+                </div>
+            </div>
+            <div class="form-row full">
+                <div>
+                    <label>Subject</label>
+                    <input type="text" id="composeSubject" placeholder="Message subject" required>
+                </div>
+            </div>
+            <div class="form-row full">
+                <div>
+                    <label>Message</label>
+                    <textarea id="composeBody" placeholder="Type your message…" required></textarea>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModal('composeModal')">Cancel</button>
+                <button type="submit" class="btn-save" id="composeSendBtn"><i class="fas fa-paper-plane"></i> Send</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Message thread modal -->
+<div class="modal-overlay" id="threadModal">
+    <div class="modal-box wide">
+        <button class="modal-close" onclick="closeModal('threadModal')"><i class="fas fa-xmark"></i></button>
+        <h2 id="threadTitle">Conversation</h2>
+        <p class="modal-sub" id="threadSub"></p>
+        <div class="thread" id="threadBody"></div>
+        <form id="threadReplyForm" class="modal-form" style="margin-top:18px;">
+            <div class="form-row full">
+                <div>
+                    <label>Reply</label>
+                    <textarea id="threadReplyBody" placeholder="Type your reply…" required></textarea>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="submit" class="btn-save" id="threadReplyBtn"><i class="fas fa-paper-plane"></i> Send Reply</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Success</span></div>
+
+<script>
+    /* ============ CONFIG ============ */
+    const API = '/api';
+    let adminToken = localStorage.getItem('vertexAdminToken') || null;
+    let allUsers = [];
+    let allMessages = [];
+    let currentThread = null;
+    let userSearchTimer = null;
+
+    /* ============ HELPERS ============ */
+    function $(id) { return document.getElementById(id); }
+
+    let toastTimer;
+    function showToast(msg, type = 'success') {
+        clearTimeout(toastTimer);
+        $('toastMsg').textContent = msg;
+        const t = $('toast');
+        t.className = 'toast show ' + type;
+        t.querySelector('i').className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+        toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    function escapeHtml(str) {
+        return String(str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
+
+    function getInitials(name) {
+        return String(name || 'U').split(' ').map(n => n.charAt(0)).join('').toUpperCase().slice(0, 2);
+    }
+
+    function timeAgo(dateStr) {
+        if (!dateStr) return '—';
+        const diff = Date.now() - new Date(dateStr).getTime();
+        const mins = Math.floor(diff / 60000);
+        if (mins < 1) return 'Just now';
+        if (mins < 60) return mins + 'm ago';
+        const hrs = Math.floor(mins / 60);
+        if (hrs < 24) return hrs + 'h ago';
+        const days = Math.floor(hrs / 24);
+        if (days < 30) return days + 'd ago';
+        return new Date(dateStr).toLocaleDateString('en-GB');
+    }
+
+    function apiFetch(path, opts = {}) {
+        const headers = { ...(opts.headers || {}) };
+        if (adminToken) headers['Authorization'] = 'Bearer ' + adminToken;
+        if (opts.body && typeof opts.body === 'object' && !(opts.body instanceof FormData)) {
+            headers['Content-Type'] = 'application/json';
+            opts.body = JSON.stringify(opts.body);
+        }
+        return fetch(API + path, { ...opts, headers })
+            .then(async r => {
+                const data = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(data.message || 'Request failed (' + r.status + ')');
+                return data;
+            });
+    }
+
+    /* ============ ADMIN LOGIN ============ */
+    $('adminLoginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = $('adminUser').value.trim();
+        const pass = $('adminPass').value;
+        const btn = $('adminLoginBtn');
+        const err = $('loginError');
+        err.classList.remove('show');
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> <span>Signing in…</span>';
+
+        try {
+            const res = await fetch(API + '/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Invalid credentials');
+
+            adminToken = data.token;
+            localStorage.setItem('vertexAdminToken', adminToken);
+            $('loginScreen').style.display = 'none';
+            $('adminApp').classList.add('active');
+            loadAll();
+        } catch (e2) {
+            $('loginErrorText').textContent = e2.message;
+            err.classList.add('show');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> <span>Sign In</span>';
+        }
+    });
+
+    // Auto-login if token exists
+    if (adminToken) {
+        $('loginScreen').style.display = 'none';
+        $('adminApp').classList.add('active');
+        loadAll();
+    }
+
+    function adminLogout() {
+        adminToken = null;
+        localStorage.removeItem('vertexAdminToken');
+        location.reload();
+    }
+
+    /* ============ NAVIGATION ============ */
+    function switchView(view) {
+        document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+        document.querySelectorAll('.admin-view').forEach(v => v.classList.toggle('active', v.id === 'view-' + view));
+
+        const titles = {
+            overview: ['Overview', 'Welcome back, Admin — here\'s your platform snapshot.'],
+            users: ['User Management', 'View, edit, suspend or delete any user account.'],
+            messages: ['Messages', 'Read, reply to, and manage all user communications.'],
+            broadcast: ['Broadcast', 'Send an announcement to every user on the platform.'],
+            jobs: ['Jobs API', 'Live job board powered by the Remotive public API.']
+        };
+        const [t, s] = titles[view] || ['Admin', ''];
+        $('viewTitle').textContent = t;
+        $('viewSubtitle').textContent = s;
+
+        if (view === 'users') loadUsers();
+        if (view === 'messages') loadMessages();
+    }
+
+    document.querySelectorAll('.admin-nav-item').forEach(btn => {
+        btn.addEventListener('click', () => switchView(btn.dataset.view));
+    });
+
+    /* ============ LOAD ALL ============ */
+    async function loadAll() {
+        await Promise.all([loadStats(), loadUsers(), loadMessages()]);
+    }
+
+    function refreshAll() {
+        loadAll().then(() => showToast('Data refreshed', 'success'));
+    }
+
+    /* ============ STATS ============ */
+    async function loadStats() {
+        try {
+            const data = await apiFetch('/admin/stats');
+            $('statTotalUsers').textContent = data.totalUsers;
+            $('statActiveUsers').textContent = data.activeUsers;
+            $('statUnreadMsgs').textContent = data.unreadMessages;
+            $('statNewToday').textContent = data.newToday;
+            $('usersBadge').textContent = data.totalUsers;
+
+            if (data.unreadMessages > 0) {
+                $('msgBadge').textContent = data.unreadMessages;
+                $('msgBadge').classList.remove('hidden');
+            } else {
+                $('msgBadge').classList.add('hidden');
+            }
+
+            // Job type breakdown
+            const jt = data.byJobType || {};
+            const entries = Object.entries(jt);
+            if (!entries.length) {
+                $('jobTypeBreakdown').innerHTML = '<div class="empty-state"><i class="fas fa-chart-pie"></i><p>No users yet</p></div>';
+            } else {
+                const total = entries.reduce((s, [, n]) => s + n, 0);
+                const colors = ['#00A6A6','#FF7B54','#FFC857','#0F2B46','#8b5cf6','#10b981','#f59e0b'];
+                $('jobTypeBreakdown').innerHTML = entries.map(([name, count], i) => {
+                    const pct = Math.round((count / total) * 100);
+                    return `
+                        <div style="margin-bottom:14px;">
+                            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
+                                <strong style="color:var(--primary);">${escapeHtml(name)}</strong>
+                                <span style="color:var(--gray);">${count} (${pct}%)</span>
+                            </div>
+                            <div style="height:8px;background:#eef2f7;border-radius:10px;overflow:hidden;">
+                                <div style="height:100%;width:${pct}%;background:${colors[i % colors.length]};border-radius:10px;transition:width 0.6s;"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        } catch (err) {
+            console.error('Stats error:', err);
+            showToast(err.message, 'error');
+        }
+    }
+
+    /* ============ USERS ============ */
+    function debounceUserSearch() {
+        clearTimeout(userSearchTimer);
+        userSearchTimer = setTimeout(loadUsers, 350);
+    }
+
+    async function loadUsers() {
+        const search = ($('userSearch')?.value || '').trim();
+        const status = $('userStatusFilter')?.value || '';
+
+        const params = new URLSearchParams();
+        if (search) params.set('search', search);
+        if (status) params.set('status', status);
+
+        try {
+            const data = await apiFetch('/admin/users?' + params.toString());
+            allUsers = data.users || [];
+            renderUsersTable(allUsers);
+            renderRecentUsers();
+        } catch (err) {
+            $('usersTable').innerHTML = `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i><p>${escapeHtml(err.message)}</p></div>`;
+            showToast(err.message, 'error');
+        }
+    }
+
+    function renderUsersTable(users) {
+        if (!users.length) {
+            $('usersTable').innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>No users found</p></div>';
+            return;
+        }
+        $('usersTable').innerHTML = `
+            <div style="overflow-x:auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Job Type</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${users.map(u => `
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        ${u.avatarUrl
+                                            ? `<img src="${escapeHtml(u.avatarUrl)}" alt="">`
+                                            : `<div class="avatar-fallback">${getInitials(u.firstName + ' ' + u.lastName)}</div>`}
+                                        <div class="uinfo">
+                                            <strong>${escapeHtml(u.firstName + ' ' + u.lastName)}</strong>
+                                            <span>${escapeHtml(u.email)}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>${escapeHtml(u.jobType || '—')}</td>
+                                <td>${escapeHtml(u.city || '—')}</td>
+                                <td><span class="status-pill ${u.status || 'active'}">${(u.status || 'active').toUpperCase()}</span></td>
+                                <td>${timeAgo(u.createdAt)}</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button onclick="viewUser('${u.id}')" title="View details"><i class="fas fa-eye"></i></button>
+                                        <button onclick="messageUser('${u.id}')" title="Send message"><i class="fas fa-envelope"></i></button>
+                                        <button class="danger" onclick="deleteUser('${u.id}', '${escapeHtml(u.firstName)}')" title="Delete"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    function renderRecentUsers() {
+        const recent = allUsers.slice(0, 5);
+        if (!recent.length) {
+            $('recentUsersTable').innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>No users yet</p></div>';
+            return;
+        }
+        $('recentUsersTable').innerHTML = `
+            <table class="data-table">
+                <thead><tr><th>User</th><th>Job Type</th><th>Status</th><th>Joined</th></tr></thead>
+                <tbody>
+                    ${recent.map(u => `
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    ${u.avatarUrl
+                                        ? `<img src="${escapeHtml(u.avatarUrl)}" alt="">`
+                                        : `<div class="avatar-fallback">${getInitials(u.firstName + ' ' + u.lastName)}</div>`}
+                                    <div class="uinfo">
+                                        <strong>${escapeHtml(u.firstName + ' ' + u.lastName)}</strong>
+                                        <span>${escapeHtml(u.email)}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${escapeHtml(u.jobType || '—')}</td>
+                            <td><span class="status-pill ${u.status || 'active'}">${(u.status || 'active').toUpperCase()}</span></td>
+                            <td>${timeAgo(u.createdAt)}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+
+    /* ============ VIEW USER MODAL ============ */
+    async function viewUser(id) {
+        try {
+            const data = await apiFetch('/admin/users/' + id);
+            const u = data.user;
+            $('userModalTitle').textContent = `${u.firstName} ${u.lastName}`;
+            $('userModalSub').textContent = u.email;
+
+            $('userModalContent').innerHTML = `
+                <div style="display:flex;gap:16px;align-items:center;margin-bottom:22px;">
+                    ${u.avatarUrl
+                        ? `<img src="${escapeHtml(u.avatarUrl)}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--secondary);">`
+                        : `<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--secondary),var(--primary));display:flex;align-items:center;justify-content:center;color:white;font-size:28px;font-weight:800;">${getInitials(u.firstName + ' ' + u.lastName)}</div>`}
+                    <div>
+                        <strong style="font-size:18px;color:var(--primary);display:block;">${escapeHtml(u.firstName + ' ' + u.lastName)}</strong>
+                        <span style="font-size:13px;color:var(--gray);">${escapeHtml(u.jobType || '—')}</span><br>
+                        <span class="status-pill ${u.status || 'active'}" style="margin-top:6px;">${(u.status || 'active').toUpperCase()}</span>
+                    </div>
+                </div>
+
+                <form class="modal-form" id="editUserForm" data-id="${u.id}">
+                    <div class="form-row">
+                        <div><label>First Name</label><input name="firstName" value="${escapeHtml(u.firstName || '')}" required></div>
+                        <div><label>Last Name</label><input name="lastName" value="${escapeHtml(u.lastName || '')}" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div><label>Email</label><input name="email" type="email" value="${escapeHtml(u.email || '')}" required></div>
+                        <div><label>Phone</label><input name="phone" value="${escapeHtml(u.phone || '')}"></div>
+                    </div>
+                    <div class="form-row">
+                        <div><label>Job Type</label>
+                            <select name="jobType">
+                                ${['Permanent Full-Time','Permanent Part-Time','Temporary / Contract','Executive / C-Suite','Internship / Graduate','Remote / Hybrid','Freelance'].map(jt => `<option ${u.jobType===jt?'selected':''}>${jt}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div><label>Status</label>
+                            <select name="status">
+                                <option value="active" ${u.status==='active'?'selected':''}>Active</option>
+                                <option value="suspended" ${u.status==='suspended'?'selected':''}>Suspended</option>
+                                <option value="banned" ${u.status==='banned'?'selected':''}>Banned</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div><label>City</label><input name="city" value="${escapeHtml(u.city || '')}"></div>
+                        <div><label>Postcode</label><input name="postcode" value="${escapeHtml(u.postcode || '')}"></div>
+                    </div>
+                    <div class="form-row full">
+                        <div><label>Address Line 1</label><input name="addressLine1" value="${escapeHtml(u.addressLine1 || '')}"></div>
+                    </div>
+
+                    <div style="margin-top:18px;padding-top:18px;border-top:1px solid #e8eef5;">
+                        <label style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:10px;display:block;">🔐 Reset Credentials</label>
+                        <div class="form-row">
+                            <div><label>New PIN (6 digits)</label><input id="newPinInput" name="newPin" placeholder="Leave blank to keep current" maxlength="6"></div>
+                            <div><label>New Password</label><input id="newPasswordInput" name="newPassword" type="text" placeholder="Optional"></div>
+                        </div>
+                        <div class="form-row full">
+                            <button type="button" class="btn-cancel" onclick="changeUserPassword('${u.id}')" style="padding:10px 18px;">
+                                <i class="fas fa-key"></i> Update Credentials
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" onclick="closeModal('userModal')">Cancel</button>
+                        <button type="submit" class="btn-save"><i class="fas fa-check"></i> Save Changes</button>
+                    </div>
+                </form>
+
+                <div style="margin-top:18px;padding-top:18px;border-top:1px solid #e8eef5;display:flex;gap:10px;flex-wrap:wrap;">
+                    <button class="btn-cancel" onclick="forceLogout('${u.id}')" style="padding:10px 18px;"><i class="fas fa-power-off"></i> Force Logout</button>
+                    <button class="btn-danger" onclick="deleteUser('${u.id}', '${escapeHtml(u.firstName)}')" style="padding:10px 18px;border-radius:10px;border:none;color:white;font-weight:600;cursor:pointer;font-family:inherit;font-size:13.5px;"><i class="fas fa-trash"></i> Delete User</button>
+                </div>
+            `;
+
+            $('editUserForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fd = new FormData(e.target);
+                const body = {};
+                fd.forEach((v, k) => { if (v && k !== 'newPin' && k !== 'newPassword') body[k] = v; });
+                try {
+                    await apiFetch('/admin/users/' + u.id, { method: 'PUT', body });
+                    showToast('User updated successfully', 'success');
+                    closeModal('userModal');
+                    loadUsers();
+                    loadStats();
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
+            });
+
+            $('userModal').classList.add('active');
+        } catch (err) {
+            showToast(err.message, 'error');
+        }
+    }
+
+    async function changeUserPassword(id) {
+        const pin = $('newPinInput').value.trim();
+        const pw = $('newPasswordInput').value.trim();
+        if (!pin && !pw) return showToast('Enter a new PIN or password', 'error');
+        if (pin && !/^\d{6}$/.test(pin)) return showToast('PIN must be 6 digits', 'error');
+
+        try {
+            await apiFetch('/admin/users/' + id + '/change-password', {
+                method: 'POST',
+                body: { newPin: pin || undefined, newPassword: pw || undefined }
+            });
+            showToast('Credentials updated', 'success');
+            $('newPinInput').value = '';
+            $('newPasswordInput').value = '';
+        } catch (err) {
+            showToast(err.message, 'error');
+        }
+    }
+
+    async function forceLogout(id) {
+        if (!confirm('Log this user out of all sessions?')) return;
+        try {
+            await apiFetch('/admin/users/' + id + '/logout', { method: 'POST' });
+            showToast('User logged out', 'success');
+        } catch (err) {
+            showToast(err.message, 'error');
+        }
+    }
+
+    async function deleteUser(id, name) {
+        if (!confirm(`Delete ${name} permanently? This cannot be undone.`)) return;
+        try {
+            await apiFetch('/admin/users/' + id, { method: 'DELETE' });
+            showToast('User deleted permanently', 'success');
+            closeModal('userModal');
+            loadUsers();
+            loadStats();
+        } catch (err) {
+            showToast(err.message, 'error');
+        }
+    }
+
+    function messageUser(id) {
+        const user = allUsers.find(u => u.id === id);
+        if (!user) return;
+        openComposeMessage();
+        setTimeout(() => {
+            const sel = $('composeRecipient');
+            if (sel) sel.value = user.id;
+        }, 100);
+    }
+
+    /* ============ MESSAGES ============ */
+    async function loadMessages() {
+        const filter = $('msgFilter')?.value || 'all';
+        try {
+            const data = await apiFetch('/admin/messages?filter=' + filter);
+            allMessages = data.messages || [];
+            renderMessages(allMessages);
+        } catch (err) {
+            $('messagesList').innerHTML = `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i><p>${escapeHtml(err.message)}</p></div>`;
+        }
+    }
+
+    function renderMessages(msgs) {
+        if (!msgs.length) {
+            $('messagesList').innerHTML = '<div class="empty-state"><i class="fas fa-envelope-open"></i><p>No messages</p></div>';
+            return;
+        }
+        $('messagesList').innerHTML = `<div class="msg-list">${msgs.map(m => `
+            <div class="msg-item ${!m.read && m.to === 'admin' ? 'unread' : ''}" onclick="openThread('${m.id}')">
+                <div class="msg-head">
+                    <div class="msg-from">
+                        <i class="fas fa-${m.from === 'admin' ? 'paper-plane' : m.from === 'system' ? 'robot' : 'user'}" style="color:var(--secondary);"></i>
+                        ${escapeHtml(m.fromUserName || m.fromName || m.from)}
+                        ${m.to === 'admin' ? '<span style="font-size:11px;color:var(--gray);font-weight:500;">→ Admin</span>' : ''}
+                    </div>
+                    <div class="msg-time">${timeAgo(m.createdAt)}</div>
+                </div>
+                <div class="msg-subject"><strong>${escapeHtml(m.subject || 'No subject')}</strong></div>
+                <div class="msg-preview">${escapeHtml(m.body || '')}</div>
+            </div>
+        `).join('')}</div>`;
+    }
+
+    /* ============ THREAD VIEW ============ */
+    async function openThread(msgId) {
+        const msg = allMessages.find(m => m.id === msgId);
+        if (!msg) return;
+        currentThread = msg;
+
+        $('threadTitle').textContent = msg.subject || 'Message';
+        $('threadSub').textContent = `From ${msg.fromUserName || msg.fromName} · ${timeAgo(msg.createdAt)}`;
+
+        // Fetch thread (just show this message)
+        $('threadBody').innerHTML = `
+            <div class="thread-msg ${msg.from === 'admin' ? 'from-admin' : 'from-user'}">
+                ${escapeHtml(msg.body)}
+                <div class="meta">${msg.from === 'admin' ? 'Admin' : (msg.fromUserName || msg.fromName)} · ${new Date(msg.createdAt).toLocaleString('en-GB')}</div>
+            </div>
+        `;
+
+        // Mark as read
+        if (!msg.read && msg.to === 'admin') {
+            try {
+                await apiFetch('/admin/messages/' + msg.id + '/read', { method: 'POST' });
+                loadMessages();
+                loadStats();
+            } catch (e) {}
+        }
+
+        $('threadModal').classList.add('active');
+    }
+
+    $('threadReplyForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const body = $('threadReplyBody').value.trim();
+        if (!body || !currentThread) return;
+
+        // Reply to whoever sent the original
+        const recipientId = currentThread.from === 'admin' ? currentThread.to : currentThread.from;
+        if (recipientId === 'admin' || recipientId === 'system') {
+            showToast('Cannot reply to system messages', 'error');
+            return;
+        }
+
+        $('threadReplyBtn').disabled = true;
+        $('threadReplyBtn').innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Sending…';
+
+        try {
+            await apiFetch('/admin/messages', {
+                method: 'POST',
+                body: {
+                    to: recipientId,
+                    subject: 'Re: ' + (currentThread.subject || 'Your message'),
+                    body
+                }
+            });
+            showToast('Reply sent', 'success');
+            $('threadReplyBody').value = '';
+            closeModal('threadModal');
+            loadMessages();
+        } catch (err) {
+            showToast(err.message, 'error');
+        } finally {
+            $('threadReplyBtn').disabled = false;
+            $('threadReplyBtn').innerHTML = '<i class="fas fa-paper-plane"></i> Send Reply';
+        }
+    });
+
+    /* ============ COMPOSE MESSAGE ============ */
+    async function openComposeMessage() {
+        if (!allUsers.length) await loadUsers();
+        const sel = $('composeRecipient');
+        sel.innerHTML = '<option value="">Select a user…</option>' +
+            allUsers.map(u => `<option value="${u.id}">${escapeHtml(u.firstName + ' ' + u.lastName)} (${escapeHtml(u.email)})</option>`).join('');
+        $('composeModal').classList.add('active');
+    }
+
+    $('composeForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const to = $('composeRecipient').value;
+        const subject = $('composeSubject').value.trim();
+        const body = $('composeBody').value.trim();
+        if (!to || !subject || !body) return showToast('All fields required', 'error');
+
+        const btn = $('composeSendBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Sending…';
+
+        try {
+            await apiFetch('/admin/messages', { method: 'POST', body: { to, subject, body } });
+            showToast('Message sent to user', 'success');
+            $('composeForm').reset();
+            closeModal('composeModal');
+            loadMessages();
+        } catch (err) {
+            showToast(err.message, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send';
+        }
+    });
+
+    /* ============ BROADCAST ============ */
+    $('broadcastForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const subject = $('broadcastSubject').value.trim();
+        const body = $('broadcastBody').value.trim();
+        if (!subject || !body) return showToast('Subject and message required', 'error');
+        if (!allUsers.length) return showToast('No users to broadcast to', 'error');
+
+        if (!confirm(`Send this message to ALL ${allUsers.length} users?`)) return;
+
+        const btn = $('broadcastBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Sending…';
+
+        let success = 0, failed = 0;
+        for (const u of allUsers) {
+            try {
+                await apiFetch('/admin/messages', {
+                    method: 'POST',
+                    body: { to: u.id, subject, body }
+                });
+                success++;
+            } catch (e) {
+                failed++;
+            }
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Broadcast';
+        $('broadcastForm').reset();
+
+        if (failed === 0) {
+            showToast(`Broadcast sent to all ${success} users!`, 'success');
+        } else {
+            showToast(`Sent to ${success}, failed for ${failed}`, 'error');
+        }
+    });
+
+    /* ============ JOBS API TEST ============ */
+    async function testJobsApi() {
+        $('jobsApiResult').innerHTML = '<div style="padding:16px;color:var(--gray);"><i class="fas fa-spinner fa-spin"></i> Testing Remotive API…</div>';
+        try {
+            const res = await fetch('/api/jobs?results_per_page=3');
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'API error');
+            const jobs = data.results || [];
+            $('jobsApiResult').innerHTML = `
+                <div style="background:rgba(16,185,129,0.08);border:1.5px solid rgba(16,185,129,0.3);border-radius:12px;padding:16px;">
+                    <div style="color:var(--success);font-weight:700;margin-bottom:10px;"><i class="fas fa-check-circle"></i> API working — ${data.count} jobs available</div>
+                    ${jobs.map(j => `<div style="font-size:13px;color:var(--gray);padding:6px 0;border-top:1px solid rgba(0,0,0,0.05);"><strong style="color:var(--primary);">${escapeHtml(j.title)}</strong> · ${escapeHtml(j.company?.display_name || '')}</div>`).join('')}
+                </div>
+            `;
+        } catch (err) {
+            $('jobsApiResult').innerHTML = `
+                <div style="background:rgba(239,68,68,0.08);border:1.5px solid rgba(239,68,68,0.3);border-radius:12px;padding:16px;">
+                    <div style="color:var(--danger);font-weight:700;"><i class="fas fa-exclamation-triangle"></i> API error: ${escapeHtml(err.message)}</div>
+                    <div style="font-size:13px;color:var(--gray);margin-top:6px;">Check your internet connection or try again later.</div>
+                </div>
+            `;
+        }
+    }
+
+    /* ============ MODAL CLOSE ============ */
+    function closeModal(id) {
+        $(id).classList.remove('active');
+    }
+    document.querySelectorAll('.modal-overlay').forEach(m => {
+        m.addEventListener('click', (e) => {
+            if (e.target === m) m.classList.remove('active');
+        });
+    });
+
+    /* ============ KEYBOARD ============ */
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+        }
+    });
+</script>
+</body>
+</html>
