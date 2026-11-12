@@ -1,0 +1,100 @@
+# ============================================================
+#  .gitignore — Vertex Talent
+# ============================================================
+
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+secrets.json
+
+# User uploads (profile pictures)
+uploads/
+public/uploads/
+!uploads/.gitkeep
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+tmp/
+temp/
+.cache/
+
+# Build output
+dist/
+build/
+out/
+.next/
+.nuxt/
+coverage/
+.nyc_output/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-workspace
+*.sublime-project
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*.sqlite
+*.sqlite3
+*.db
+
+# Test coverage
+coverage/
+.nyc_output/
+.nyc_output/*
+coverage/*
+
+# Optional: local database dumps / backups
+backups/
+*.dump
+*.sql.gz
+
+# Vercel / Netlify
+.vercel/
+.netlify/
+
+# PM2
+.pm2/
+
+# Auto-generated
+.eslintcache
+.stylelintcache
