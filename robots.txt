@@ -1,0 +1,78 @@
+# ============================================================
+#  robots.txt — Vertex Talent
+#  https://www.vertextalent.co.uk
+# ============================================================
+
+# Allow all crawlers on public content
+User-agent: *
+Allow: /
+Allow: /jobs
+Allow: /about
+Allow: /support
+
+# Block private / admin areas
+Disallow: /admin
+Disallow: /admin.html
+Disallow: /dashboard
+Disallow: /dashboard.html
+Disallow: /profile
+Disallow: /profile.html
+Disallow: /applications
+Disallow: /applications.html
+Disallow: /saved
+Disallow: /saved.html
+Disallow: /chat
+Disallow: /chat.html
+Disallow: /api/
+Disallow: /uploads/
+
+# Block registration & login pages from search indexing
+Disallow: /register
+Disallow: /register.html
+Disallow: /login
+Disallow: /login.html
+
+# Crawl-delay for well-behaved bots
+Crawl-delay: 5
+
+# Sitemap (create one later if you wish)
+# Sitemap: https://www.vertextalent.co.uk/sitemap.xml
+
+# ============================================================
+#  Specific user-agents
+# ============================================================
+
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+# AI training crawlers — block
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
