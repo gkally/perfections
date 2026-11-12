@@ -1,12 +1,11 @@
 // ============================================================
 //  server.js — Vertex Talent Recruitment Platform
-//  Database: JSONBin.io | Jobs API: Remotive (free, no key)
-//  Node.js + Express + Multer + JSONBin
-//  Run: npm install express cors multer axios dotenv
-//       node server.js
+//  Database: JSONBin.io (hardcoded)
+//  Jobs API: Remotive (free, no key)
+//  Admin password: Tomtom1@
+//  Run: npm install && npm start
 // ============================================================
 
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
@@ -16,18 +15,17 @@ const fs = require('fs');
 const crypto = require('crypto');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 // ============================================================
-//  CONFIGURATION
+//  HARDCODED CONFIGURATION (no .env needed)
 // ============================================================
-const JSONBIN_API_KEY = process.env.JSONBIN_API_KEY || '$2a$10$rCMZ5BGigbU.r61CyfSSMuDVGGKbVun2m0Q/crGUa4hM8vmfP81g2';
-const JSONBIN_BIN_ID  = process.env.JSONBIN_BIN_ID  || '6af59487ffd5d16053bbab85';
+const JSONBIN_API_KEY = '$2a$10$rCMZ5BGigbU.r61CyfSSMuDVGGKbVun2m0Q/crGUa4hM8vmfP81g2';
+const JSONBIN_BIN_ID  = '6af59487ffd5d16053bbab85';
 const JSONBIN_BASE    = 'https://api.jsonbin.io/v3';
 
-// Admin credentials (change in production via env)
-const ADMIN_USER = process.env.ADMIN_USER || 'admin';
-const ADMIN_PASS = process.env.ADMIN_PASS || 'vertex2026!';
+// Admin credentials — password only login on admin.html
+const ADMIN_PASSWORD = 'Tomtom1@';
 
 // ============================================================
 //  MIDDLEWARE
@@ -68,15 +66,10 @@ const jsonbinHeaders = {
     'X-Bin-Meta': 'false'
 };
 
-// In-memory cache to reduce JSONBin calls (free tier: limited)
 let dbCache = null;
 let dbCacheTime = 0;
 const CACHE_TTL = 15000; // 15s
 
-/**
- * Read entire database from JSONBin
- * Returns { users: [], messages: [], sessions: {} }
- */
 async function readDB(forceRefresh = false) {
     if (!forceRefresh && dbCache && (Date.now() - dbCacheTime) < CACHE_TTL) {
         return dbCache;
@@ -100,18 +93,14 @@ async function readDB(forceRefresh = false) {
         return data;
     } catch (err) {
         console.error('❌ JSONBin read error:', err.response?.status || err.message);
-        // Fallback to cache or empty structure
         if (dbCache) return dbCache;
         return { users: [], messages: [], sessions: {} };
     }
 }
 
-/**
- * Write entire database to JSONBin
- */
 async function writeDB(data) {
     try {
-        const res = await axios.put(`${JSONBIN_BASE}/b/${JSONBIN_BIN_ID}`, data, {
+        await axios.put(`${JSONBIN_BASE}/b/${JSONBIN_BIN_ID}`, data, {
             headers: jsonbinHeaders,
             timeout: 12000
         });
@@ -120,7 +109,6 @@ async function writeDB(data) {
         return true;
     } catch (err) {
         console.error('❌ JSONBin write error:', err.response?.status || err.message);
-        // Still update local cache so UI works even if remote write fails
         dbCache = data;
         dbCacheTime = Date.now();
         return false;
@@ -163,6 +151,10 @@ function calcAge(dob) {
     return age;
 }
 
+function stripHtml(html) {
+    return String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
 // ============================================================
 //  AUTH MIDDLEWARE
 // ============================================================
@@ -178,6 +170,9 @@ async function authUser(req, res, next) {
 
         const user = db.users.find(u => u.id === session.userId);
         if (!user) return res.status(401).json({ message: 'User not found' });
+        if (user.status === 'suspended' || user.status === 'banned') {
+            return res.status(403).json({ message: 'Account suspended. Contact support.' });
+        }
 
         req.user = user;
         req.token = token;
@@ -191,11 +186,9 @@ async function authUser(req, res, next) {
 function authAdmin(req, res, next) {
     const auth = req.headers.authorization || '';
     const token = auth.startsWith('Bearer ') ? auth.slice(7) : auth;
-    if (!token || !token.startsWith('admin:')) {
-        return res.status(401).json({ message: 'Admin authentication required' });
-    }
-    // Simple admin token check
-    const expected = 'admin:' + crypto.createHash('sha256').update(ADMIN_USER + ':' + ADMIN_PASS).digest('hex').slice(0, 32);
+    if (!token) return res.status(401).json({ message: 'Admin authentication required' });
+
+    const expected = 'admin:' + crypto.createHash('sha256').update(ADMIN_PASSWORD).digest('hex').slice(0, 32);
     if (token !== expected) {
         return res.status(401).json({ message: 'Invalid admin token' });
     }
@@ -203,7 +196,7 @@ function authAdmin(req, res, next) {
 }
 
 // ============================================================
-//  API ROUTES — HEALTH
+//  API — HEALTH
 // ============================================================
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', time: new Date().toISOString(), service: 'Vertex Talent API' });
@@ -219,7 +212,6 @@ app.post('/api/register', upload.single('avatar'), async (req, res) => {
             addressLine1, city, postcode, jobType, pin
         } = req.body;
 
-        // --- Validate required fields ---
         if (!firstName || !lastName || !email || !phone || !dob || !addressLine1 || !city || !postcode || !jobType || !pin) {
             return res.status(400).json({ message: 'All required fields must be filled.' });
         }
@@ -247,13 +239,11 @@ app.post('/api/register', upload.single('avatar'), async (req, res) => {
             return res.status(409).json({ message: 'An account with this email already exists.' });
         }
 
-        // Build avatar URL
         let avatarUrl = null;
         if (req.file) {
             avatarUrl = '/uploads/' + req.file.filename;
         }
 
-        // Create user
         const user = {
             id: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
             firstName: String(firstName).trim(),
@@ -269,23 +259,19 @@ app.post('/api/register', upload.single('avatar'), async (req, res) => {
             jobType,
             avatarUrl,
             pinHash: hashPin(pin),
-            passwordHash: hashPassword(pin), // fallback password = PIN
+            passwordHash: hashPassword(pin),
             role: 'candidate',
             status: 'active',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            lastLogin: null
+            lastLogin: new Date().toISOString()
         };
 
         db.users.push(user);
 
-        // Create session
         const token = generateToken();
         db.sessions[token] = { userId: user.id, createdAt: Date.now(), type: 'user' };
 
-        await writeDB(db);
-
-        // Notify admin (internal message)
         db.messages.push({
             id: 'm_' + Date.now(),
             from: 'system',
@@ -295,6 +281,7 @@ app.post('/api/register', upload.single('avatar'), async (req, res) => {
             read: false,
             createdAt: new Date().toISOString()
         });
+
         await writeDB(db);
 
         res.status(201).json({
@@ -321,7 +308,6 @@ app.post('/api/login/pin', async (req, res) => {
         const db = await readDB(true);
         const pinH = hashPin(pin);
 
-        // Find user by PIN (if email provided, narrow down)
         let user = null;
         if (email) {
             user = db.users.find(u => u.email === email.toLowerCase().trim() && u.pinHash === pinH);
@@ -333,9 +319,7 @@ app.post('/api/login/pin', async (req, res) => {
             }
         }
 
-        if (!user) {
-            return res.status(401).json({ message: 'Invalid PIN. Please try again.' });
-        }
+        if (!user) return res.status(401).json({ message: 'Invalid PIN. Please try again.' });
         if (user.status === 'suspended' || user.status === 'banned') {
             return res.status(403).json({ message: 'Account suspended. Contact support.' });
         }
@@ -344,19 +328,13 @@ app.post('/api/login/pin', async (req, res) => {
         const token = generateToken();
         db.sessions[token] = { userId: user.id, createdAt: Date.now(), type: 'user' };
 
-        // Cleanup old sessions (older than 30 days)
         const cutoff = Date.now() - 30 * 86400000;
         Object.keys(db.sessions).forEach(t => {
             if (db.sessions[t].createdAt < cutoff) delete db.sessions[t];
         });
 
         await writeDB(db);
-
-        res.json({
-            message: 'Login successful',
-            user: sanitizeUser(user),
-            token
-        });
+        res.json({ message: 'Login successful', user: sanitizeUser(user), token });
     } catch (err) {
         console.error('PIN login error:', err);
         res.status(500).json({ message: 'Login failed. Please try again.' });
@@ -376,15 +354,14 @@ app.post('/api/login', async (req, res) => {
         const db = await readDB(true);
         const user = db.users.find(u => (u.email || '').toLowerCase() === email.toLowerCase().trim());
 
-        if (!user) {
-            return res.status(401).json({ message: 'Invalid email or password.' });
-        }
+        if (!user) return res.status(401).json({ message: 'Invalid email or password.' });
         if (user.status === 'suspended' || user.status === 'banned') {
             return res.status(403).json({ message: 'Account suspended. Contact support.' });
         }
 
         const pwH = hashPassword(password);
-        if (user.passwordHash !== pwH && user.pinHash !== pwH && user.pinHash !== hashPin(password)) {
+        const pinH = hashPin(password);
+        if (user.passwordHash !== pwH && user.passwordHash !== pinH) {
             return res.status(401).json({ message: 'Invalid email or password.' });
         }
 
@@ -444,7 +421,7 @@ app.put('/api/profile', authUser, upload.single('avatar'), async (req, res) => {
 });
 
 // ============================================================
-//  API — CHANGE PIN / PASSWORD (user)
+//  API — CHANGE PIN
 // ============================================================
 app.post('/api/change-pin', authUser, async (req, res) => {
     try {
@@ -484,13 +461,10 @@ app.post('/api/logout', authUser, async (req, res) => {
 // ============================================================
 //  API — JOBS (Remotive — free, no registration)
 // ============================================================
-// Remotive docs: https://remotive.com/api/remote-jobs
-// Free, no API key. Supports search & category filtering.
 app.get('/api/jobs', async (req, res) => {
     try {
-        const { what = '', location = '', category = '', page = 1, results_per_page = 20, sort_by = 'relevance' } = req.query;
+        const { what = '', location = '', category = '', page = 1, results_per_page = 20, sort_by = 'relevance', contract_time = '' } = req.query;
 
-        // Build Remotive query
         const params = new URLSearchParams();
         if (what) params.set('search', what);
         if (category) params.set('category', category);
@@ -503,9 +477,7 @@ app.get('/api/jobs', async (req, res) => {
             id: String(job.id),
             title: job.title,
             company: { display_name: job.company_name || 'Company' },
-            location: {
-                display_name: job.candidate_required_location || 'Remote / UK'
-            },
+            location: { display_name: job.candidate_required_location || 'Remote / UK' },
             salary_min: null,
             salary_max: null,
             salary_text: job.salary || null,
@@ -521,7 +493,6 @@ app.get('/api/jobs', async (req, res) => {
             source: 'Remotive'
         }));
 
-        // Client-side filtering for location/type (Remotive doesn't support all params)
         if (location) {
             const locLower = location.toLowerCase();
             const filtered = jobs.filter(j =>
@@ -529,22 +500,16 @@ app.get('/api/jobs', async (req, res) => {
                 (j.location.display_name || '').toLowerCase().includes('worldwide') ||
                 (j.location.display_name || '').toLowerCase().includes('anywhere')
             );
-            // If no matches in location, keep remote roles (better UX)
             if (filtered.length > 0) jobs = filtered;
         }
-        if (req.query.contract_time) {
-            const ct = req.query.contract_time.toLowerCase();
-            jobs = jobs.filter(j => (j.contract_time || '').toLowerCase().includes(ct) || (j.contract_type || '').toLowerCase().includes(ct));
+        if (contract_time) {
+            const ct = contract_time.toLowerCase();
+            jobs = jobs.filter(j => (j.contract_time || '').toLowerCase().includes(ct));
         }
 
-        // Sort
-        if (sort_by === 'date') {
-            jobs.sort((a, b) => new Date(b.created) - new Date(a.created));
-        } else if (sort_by === 'salary') {
-            jobs.sort((a, b) => (b.salary_max || 0) - (a.salary_max || 0));
-        }
+        if (sort_by === 'date') jobs.sort((a, b) => new Date(b.created) - new Date(a.created));
+        else if (sort_by === 'salary') jobs.sort((a, b) => (b.salary_max || 0) - (a.salary_max || 0));
 
-        // Paginate
         const p = Math.max(1, parseInt(page) || 1);
         const perPage = Math.min(parseInt(results_per_page) || 20, 50);
         const total = jobs.length;
@@ -559,24 +524,13 @@ app.get('/api/jobs', async (req, res) => {
         });
     } catch (err) {
         console.error('Jobs API error:', err.message);
-        res.status(500).json({
-            error: 'Could not fetch jobs',
-            message: err.message,
-            count: 0,
-            results: []
-        });
+        res.status(500).json({ error: 'Could not fetch jobs', message: err.message, count: 0, results: [] });
     }
 });
-
-function stripHtml(html) {
-    return String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-}
 
 // ============================================================
 //  API — MESSAGES (user ↔ admin)
 // ============================================================
-
-// User sends a message to admin
 app.post('/api/messages', authUser, async (req, res) => {
     try {
         const { subject = 'Support request', body } = req.body;
@@ -603,7 +557,6 @@ app.post('/api/messages', authUser, async (req, res) => {
     }
 });
 
-// Get all messages for current user (inbox + sent)
 app.get('/api/messages', authUser, async (req, res) => {
     try {
         const db = await readDB();
@@ -615,7 +568,6 @@ app.get('/api/messages', authUser, async (req, res) => {
     }
 });
 
-// Mark message as read
 app.post('/api/messages/:id/read', authUser, async (req, res) => {
     try {
         const db = await readDB(true);
@@ -633,15 +585,15 @@ app.post('/api/messages/:id/read', authUser, async (req, res) => {
 });
 
 // ============================================================
-//  ADMIN API — LOGIN
+//  ADMIN API — LOGIN (password only)
 // ============================================================
 app.post('/api/admin/login', (req, res) => {
-    const { username, password } = req.body;
-    if (username === ADMIN_USER && password === ADMIN_PASS) {
-        const token = 'admin:' + crypto.createHash('sha256').update(username + ':' + password).digest('hex').slice(0, 32);
-        return res.json({ message: 'Admin login successful', token, username: ADMIN_USER });
+    const { password } = req.body;
+    if (password === ADMIN_PASSWORD) {
+        const token = 'admin:' + crypto.createHash('sha256').update(ADMIN_PASSWORD).digest('hex').slice(0, 32);
+        return res.json({ message: 'Admin login successful', token });
     }
-    return res.status(401).json({ message: 'Invalid admin credentials' });
+    return res.status(401).json({ message: 'Incorrect password' });
 });
 
 // ============================================================
@@ -657,7 +609,6 @@ app.get('/api/admin/stats', authAdmin, async (req, res) => {
         const today = new Date().toISOString().slice(0, 10);
         const newToday = db.users.filter(u => (u.createdAt || '').startsWith(today)).length;
 
-        // Users by job type
         const byJobType = {};
         db.users.forEach(u => {
             const jt = u.jobType || 'Unknown';
@@ -688,10 +639,7 @@ app.get('/api/admin/users', authAdmin, async (req, res) => {
         const { search = '', status = '', jobType = '' } = req.query;
         const db = await readDB();
 
-        let users = db.users.map(u => ({
-            ...sanitizeUser(u),
-            hasPin: !!u.pinHash
-        }));
+        let users = db.users.map(u => ({ ...sanitizeUser(u), hasPin: !!u.pinHash }));
 
         if (search) {
             const s = search.toLowerCase();
@@ -707,7 +655,6 @@ app.get('/api/admin/users', authAdmin, async (req, res) => {
         if (jobType) users = users.filter(u => u.jobType === jobType);
 
         users.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
         res.json({ total: users.length, users });
     } catch (err) {
         res.status(500).json({ message: 'Failed to load users' });
@@ -729,7 +676,7 @@ app.get('/api/admin/users/:id', authAdmin, async (req, res) => {
 });
 
 // ============================================================
-//  ADMIN API — UPDATE USER (profile, status, role)
+//  ADMIN API — UPDATE USER
 // ============================================================
 app.put('/api/admin/users/:id', authAdmin, async (req, res) => {
     try {
@@ -782,7 +729,7 @@ app.post('/api/admin/users/:id/change-password', authAdmin, async (req, res) => 
 });
 
 // ============================================================
-//  ADMIN API — TOGGLE STATUS (suspend/activate)
+//  ADMIN API — TOGGLE STATUS
 // ============================================================
 app.post('/api/admin/users/:id/status', authAdmin, async (req, res) => {
     try {
@@ -796,7 +743,6 @@ app.post('/api/admin/users/:id/status', authAdmin, async (req, res) => {
         user.status = status;
         user.updatedAt = new Date().toISOString();
 
-        // Force logout suspended users
         if (status !== 'active') {
             Object.keys(db.sessions).forEach(t => {
                 if (db.sessions[t].userId === user.id) delete db.sessions[t];
@@ -834,20 +780,16 @@ app.delete('/api/admin/users/:id', authAdmin, async (req, res) => {
 // ============================================================
 //  ADMIN API — MESSAGES
 // ============================================================
-
-// Get all messages (admin view)
 app.get('/api/admin/messages', authAdmin, async (req, res) => {
     try {
         const { filter = 'all' } = req.query;
         const db = await readDB();
 
         let msgs = [...db.messages].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
         if (filter === 'unread') msgs = msgs.filter(m => !m.read && m.to === 'admin');
         if (filter === 'from-users') msgs = msgs.filter(m => m.to === 'admin');
         if (filter === 'sent-by-admin') msgs = msgs.filter(m => m.from === 'admin');
 
-        // Attach user info
         const usersMap = {};
         db.users.forEach(u => usersMap[u.id] = { firstName: u.firstName, lastName: u.lastName, email: u.email });
 
@@ -867,7 +809,6 @@ app.get('/api/admin/messages', authAdmin, async (req, res) => {
     }
 });
 
-// Admin sends message to a user
 app.post('/api/admin/messages', authAdmin, async (req, res) => {
     try {
         const { to, subject = 'Message from Vertex Talent', body } = req.body;
@@ -897,7 +838,6 @@ app.post('/api/admin/messages', authAdmin, async (req, res) => {
     }
 });
 
-// Admin marks message read
 app.post('/api/admin/messages/:id/read', authAdmin, async (req, res) => {
     try {
         const db = await readDB(true);
@@ -911,7 +851,6 @@ app.post('/api/admin/messages/:id/read', authAdmin, async (req, res) => {
     }
 });
 
-// Admin deletes message
 app.delete('/api/admin/messages/:id', authAdmin, async (req, res) => {
     try {
         const db = await readDB(true);
@@ -940,7 +879,7 @@ app.post('/api/admin/users/:id/logout', authAdmin, async (req, res) => {
 });
 
 // ============================================================
-//  API — CONTACT / WHATSAPP CLICK TRACKING
+//  API — CONTACT FORM
 // ============================================================
 app.post('/api/contact', async (req, res) => {
     try {
@@ -967,40 +906,31 @@ app.post('/api/contact', async (req, res) => {
 });
 
 // ============================================================
-//  HTML PAGE ROUTES (serve from /public)
+//  HTML PAGE ROUTES
 // ============================================================
 const pages = ['index', 'register', 'login', 'dashboard', 'jobs', 'about', 'chat', 'profile', 'support', 'applications', 'saved', 'admin'];
 pages.forEach(p => {
-    app.get(`/${p === 'index' ? '' : p}`, (req, res, next) => {
+    const route = p === 'index' ? '/' : '/' + p;
+    app.get(route, (req, res, next) => {
         const file = path.join(__dirname, 'public', p + '.html');
         if (fs.existsSync(file)) res.sendFile(file);
         else next();
     });
 });
 
-// Root
 app.get('/', (req, res) => {
     const file = path.join(__dirname, 'public', 'index.html');
     if (fs.existsSync(file)) res.sendFile(file);
-    else res.send('Vertex Talent API running. Create public/index.html to serve the site.');
+    else res.send('Vertex Talent API running.');
 });
 
-// Admin page
-app.get('/admin', (req, res) => {
-    const file = path.join(__dirname, 'public', 'admin.html');
-    if (fs.existsSync(file)) res.sendFile(file);
-    else res.status(404).send('Admin panel not found. Create public/admin.html');
-});
-
-// 404 fallback
+// 404
 app.use((req, res) => {
-    if (req.path.startsWith('/api/')) {
-        return res.status(404).json({ message: 'Endpoint not found' });
-    }
+    if (req.path.startsWith('/api/')) return res.status(404).json({ message: 'Endpoint not found' });
     res.status(404).send('Page not found');
 });
 
-// Error handler (multer etc)
+// Error handler
 app.use((err, req, res, next) => {
     console.error('❌ Server error:', err.message);
     if (err instanceof multer.MulterError) {
@@ -1020,5 +950,6 @@ app.listen(PORT, () => {
     console.log('   API:      http://localhost:' + PORT + '/api/health');
     console.log('   Database: JSONBin (bin ' + JSONBIN_BIN_ID.slice(0, 8) + '…)');
     console.log('   Jobs API: Remotive (free, no key)');
+    console.log('   Admin password: ' + ADMIN_PASSWORD);
     console.log('='.repeat(60) + '\n');
 });
