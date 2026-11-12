@@ -1,0 +1,710 @@
+<!-- ============================================================
+     JOBS.HTML — Live UK Jobs via Adzuna API
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Find Jobs | Vertex Talent — Live UK Openings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #0F2B46; --primary-dark: #081C2F; --primary-soft: #244B6B;
+            --secondary: #00A6A6; --secondary-glow: #2DD4BF; --accent: #FF7B54;
+            --gold: #FFC857; --dark: #0A1A2B; --gray: #4F6F8F; --white: #FFFFFF;
+            --danger: #ef4444; --success: #10b981; --whatsapp: #25D366;
+            --shadow-soft: 0 20px 35px -12px rgba(0,0,0,0.06);
+            --shadow-bold: 0 28px 45px -12px rgba(0,0,0,0.18);
+        }
+        body { font-family: 'Inter', sans-serif; background: #F7FAFF; color: var(--dark); line-height: 1.5; overflow-x: hidden; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 28px; }
+
+        /* Header */
+        .dash-header {
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0,166,166,0.15);
+            position: sticky; top: 0; z-index: 1000; padding: 14px 0;
+        }
+        .dash-header .container { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .dash-logo h1 { font-size: 22px; font-weight: 800; background: linear-gradient(125deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; display: flex; align-items: center; gap: 8px; }
+        .dash-logo span { font-size: 10.5px; color: var(--gray); font-weight: 500; display: block; }
+        .header-links { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .header-links a { text-decoration: none; color: var(--gray); font-size: 13.5px; font-weight: 500; padding: 8px 16px; border-radius: 50px; transition: 0.2s; }
+        .header-links a:hover, .header-links a.active { background: var(--secondary); color: white; }
+        .user-chip { display: flex; align-items: center; gap: 10px; padding: 5px 14px 5px 5px; border-radius: 50px; background: white; border: 1.5px solid #e2e8f0; cursor: pointer; text-decoration: none; color: var(--dark); transition: 0.2s; }
+        .user-chip:hover { border-color: var(--secondary); }
+        .user-chip img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 2px solid var(--secondary); }
+        .user-chip strong { font-size: 13px; color: var(--primary); }
+
+        /* Hero search */
+        .jobs-hero {
+            background: linear-gradient(120deg, var(--primary), var(--primary-soft));
+            padding: 48px 0 56px; position: relative; overflow: hidden;
+        }
+        .jobs-hero::before { content: ''; position: absolute; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(0,166,166,0.25), transparent 70%); top: -200px; right: -100px; }
+        .jobs-hero h1 { font-size: 38px; font-weight: 800; color: white; letter-spacing: -1px; margin-bottom: 10px; position: relative; z-index: 2; }
+        .jobs-hero p { font-size: 16px; color: rgba(255,255,255,0.8); margin-bottom: 28px; position: relative; z-index: 2; }
+        .search-box {
+            background: white; border-radius: 20px; padding: 10px;
+            display: grid; grid-template-columns: 2fr 1.2fr 1fr auto; gap: 8px;
+            box-shadow: var(--shadow-bold); position: relative; z-index: 2; align-items: center;
+        }
+        .search-field { position: relative; display: flex; align-items: center; }
+        .search-field i { position: absolute; left: 16px; color: #94a3b8; font-size: 14px; pointer-events: none; }
+        .search-field input, .search-field select {
+            width: 100%; padding: 14px 14px 14px 44px; border: 1.5px solid #e2e8f0; border-radius: 14px;
+            font-size: 14px; font-family: inherit; background: #FAFCFF; outline: none; transition: 0.2s;
+            color: var(--dark);
+        }
+        .search-field input:focus, .search-field select:focus { border-color: var(--secondary); background: white; box-shadow: 0 0 0 4px rgba(0,166,166,0.08); }
+        .search-field select { appearance: none; cursor: pointer; padding-right: 36px; }
+        .search-field .chev { position: absolute; right: 14px; color: #94a3b8; font-size: 11px; pointer-events: none; }
+        .search-btn {
+            padding: 14px 32px; border: none; border-radius: 14px;
+            background: linear-gradient(125deg, var(--secondary), var(--primary));
+            color: white; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer;
+            transition: 0.25s; display: flex; align-items: center; gap: 8px; white-space: nowrap;
+            box-shadow: 0 8px 18px rgba(0,166,166,0.3);
+        }
+        .search-btn:hover { transform: translateY(-2px); background: linear-gradient(125deg, var(--accent), var(--primary)); }
+        .search-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        /* Filter chips */
+        .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; position: relative; z-index: 2; }
+        .chip { padding: 7px 16px; border-radius: 50px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); color: white; font-size: 12.5px; font-weight: 500; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
+        .chip:hover, .chip.active { background: var(--secondary); border-color: var(--secondary); }
+
+        /* Results */
+        .jobs-main { padding: 32px 0 60px; }
+        .results-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; flex-wrap: wrap; gap: 12px; }
+        .results-bar h2 { font-size: 20px; font-weight: 800; color: var(--primary); }
+        .results-bar h2 span { color: var(--secondary); }
+        .results-bar .controls { display: flex; gap: 10px; align-items: center; }
+        .sort-select { padding: 9px 16px; border-radius: 50px; border: 1.5px solid #e2e8f0; font-family: inherit; font-size: 13px; background: white; cursor: pointer; outline: none; color: var(--dark); }
+
+        .jobs-list { display: flex; flex-direction: column; gap: 14px; }
+        .job-card {
+            background: white; border-radius: 20px; border: 1.5px solid #e8eef5;
+            padding: 22px 24px; display: flex; gap: 18px; align-items: flex-start;
+            transition: 0.25s; cursor: pointer; text-decoration: none; color: inherit;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02); position: relative;
+        }
+        .job-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-soft); border-color: rgba(0,166,166,0.35); }
+        .job-card .company-logo {
+            width: 58px; height: 58px; border-radius: 16px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; font-weight: 800; color: white;
+        }
+        .job-card .job-body { flex: 1; min-width: 0; }
+        .job-card .job-body h3 { font-size: 16.5px; font-weight: 700; color: var(--primary); margin-bottom: 5px; }
+        .job-card .job-body .company-name { font-size: 13.5px; color: var(--gray); font-weight: 600; margin-bottom: 8px; }
+        .job-card .job-body .meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: var(--gray); }
+        .job-card .job-body .meta span { display: flex; align-items: center; gap: 5px; }
+        .job-card .job-body .meta i { color: var(--secondary); font-size: 11px; }
+        .job-card .job-body .desc { font-size: 13px; color: var(--gray); margin-top: 10px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .job-card .job-side { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0; }
+        .job-card .salary { font-size: 15px; font-weight: 800; color: var(--primary); white-space: nowrap; }
+        .job-card .job-type-tag { font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 50px; background: rgba(0,166,166,0.1); color: var(--secondary); white-space: nowrap; }
+        .job-card .posted { font-size: 11.5px; color: #94a3b8; }
+        .job-card .apply-btn { padding: 9px 20px; border-radius: 50px; background: var(--primary); color: white; font-size: 12.5px; font-weight: 600; text-decoration: none; transition: 0.2s; border: none; cursor: pointer; }
+        .job-card .apply-btn:hover { background: var(--secondary); transform: translateY(-2px); }
+
+        /* States */
+        .state-box { text-align: center; padding: 70px 24px; background: white; border-radius: 24px; border: 1.5px solid #e8eef5; }
+        .state-box .state-ico { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 32px; }
+        .state-box .state-ico.loading { background: rgba(0,166,166,0.1); color: var(--secondary); }
+        .state-box .state-ico.error { background: rgba(239,68,68,0.1); color: var(--danger); }
+        .state-box .state-ico.empty { background: rgba(79,111,143,0.1); color: var(--gray); }
+        .state-box h3 { font-size: 20px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
+        .state-box p { font-size: 14px; color: var(--gray); max-width: 400px; margin: 0 auto 20px; }
+        .state-box button { padding: 12px 28px; border-radius: 50px; border: none; background: var(--secondary); color: white; font-weight: 600; font-family: inherit; cursor: pointer; font-size: 14px; transition: 0.2s; }
+        .state-box button:hover { background: var(--accent); transform: translateY(-2px); }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(0,166,166,0.2); border-top-color: var(--secondary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Pagination */
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 36px; flex-wrap: wrap; }
+        .pagination button { min-width: 42px; height: 42px; border-radius: 12px; border: 1.5px solid #e2e8f0; background: white; font-family: inherit; font-weight: 600; font-size: 13.5px; color: var(--gray); cursor: pointer; transition: 0.2s; padding: 0 14px; }
+        .pagination button:hover:not(:disabled) { border-color: var(--secondary); color: var(--secondary); }
+        .pagination button.active { background: var(--secondary); border-color: var(--secondary); color: white; }
+        .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* Toast */
+        .toast { position: fixed; top: 24px; right: 24px; z-index: 10001; padding: 14px 22px; border-radius: 14px; background: white; box-shadow: var(--shadow-bold); display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; transform: translateX(400px); transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); border-left: 4px solid var(--success); }
+        .toast.show { transform: translateX(0); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast i { font-size: 18px; }
+        .toast.success i { color: var(--success); }
+        .toast.error i { color: var(--danger); }
+
+        /* Job detail modal */
+        .modal-overlay { position: fixed; inset: 0; z-index: 10002; background: rgba(10,26,43,0.7); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 24px; overflow-y: auto; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: white; border-radius: 24px; padding: 32px; max-width: 680px; width: 100%; max-height: 90vh; overflow-y: auto; animation: modalIn 0.3s ease; position: relative; }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .modal-close { position: absolute; top: 18px; right: 18px; width: 36px; height: 36px; border-radius: 50%; border: none; background: #f1f5f9; color: var(--gray); font-size: 16px; cursor: pointer; transition: 0.2s; }
+        .modal-close:hover { background: var(--danger); color: white; }
+        .modal-job-head { display: flex; gap: 18px; align-items: flex-start; margin-bottom: 20px; padding-right: 40px; }
+        .modal-job-head .company-logo { width: 64px; height: 64px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; color: white; flex-shrink: 0; }
+        .modal-job-head h2 { font-size: 22px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+        .modal-job-head .company-name { font-size: 14px; color: var(--gray); font-weight: 600; }
+        .modal-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+        .modal-meta-item { background: #F7FAFF; border-radius: 12px; padding: 14px 16px; }
+        .modal-meta-item .lbl { font-size: 11px; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .modal-meta-item .val { font-size: 14px; color: var(--primary); font-weight: 700; }
+        .modal-section-title { font-size: 15px; font-weight: 800; color: var(--primary); margin: 22px 0 10px; }
+        .modal-desc { font-size: 14px; color: var(--gray); line-height: 1.7; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 26px; flex-wrap: wrap; }
+        .modal-actions .btn-apply { flex: 1; padding: 14px; border: none; border-radius: 14px; background: linear-gradient(125deg, var(--secondary), var(--primary)); color: white; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; transition: 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .modal-actions .btn-apply:hover { transform: translateY(-2px); background: linear-gradient(125deg, var(--accent), var(--primary)); }
+        .modal-actions .btn-wa { padding: 14px 22px; border: 1.5px solid var(--whatsapp); border-radius: 14px; background: white; color: var(--whatsapp); font-size: 14px; font-weight: 700; font-family: inherit; cursor: pointer; transition: 0.25s; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .modal-actions .btn-wa:hover { background: var(--whatsapp); color: white; transform: translateY(-2px); }
+
+        /* WhatsApp float */
+        .whatsapp-float { position: fixed; bottom: 28px; right: 28px; z-index: 999; }
+        .whatsapp-btn { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #25D366, #128C7E); display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; text-decoration: none; box-shadow: 0 10px 30px rgba(37,211,102,0.4); border: 3px solid white; transition: 0.3s; animation: waPulse 2s infinite; }
+        .whatsapp-btn:hover { transform: scale(1.1); }
+        @keyframes waPulse { 0% { box-shadow: 0 0 0 0 rgba(37,211,102,0.5), 0 10px 30px rgba(37,211,102,0.4); } 70% { box-shadow: 0 0 0 16px rgba(37,211,102,0), 0 10px 30px rgba(37,211,102,0.4); } 100% { box-shadow: 0 0 0 0 rgba(37,211,102,0), 0 10px 30px rgba(37,211,102,0.4); } }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .search-box { grid-template-columns: 1fr 1fr; }
+            .search-btn { grid-column: 1 / -1; justify-content: center; }
+            .jobs-hero h1 { font-size: 28px; }
+        }
+        @media (max-width: 768px) {
+            .container { padding: 0 18px; }
+            .job-card { flex-wrap: wrap; padding: 18px; }
+            .job-card .job-side { width: 100%; flex-direction: row; justify-content: space-between; align-items: center; margin-top: 8px; }
+            .modal-meta-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 540px) {
+            .search-box { grid-template-columns: 1fr; padding: 12px; }
+            .header-links a:not(.user-chip) { display: none; }
+            .job-card .company-logo { width: 48px; height: 48px; font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="dash-header">
+    <div class="container">
+        <div class="dash-logo">
+            <h1><i class="fas fa-bolt"></i> Vertex Talent</h1>
+            <span>LIVE UK JOB BOARD</span>
+        </div>
+        <div class="header-links">
+            <a href="dashboard.html"><i class="fas fa-house"></i> Dashboard</a>
+            <a href="jobs.html" class="active"><i class="fas fa-briefcase"></i> Jobs</a>
+            <a href="about.html"><i class="fas fa-circle-info"></i> About</a>
+            <a href="chat.html"><i class="fas fa-comments"></i> Chat</a>
+            <a href="dashboard.html" class="user-chip">
+                <img id="userChipAvatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" alt="User">
+                <strong id="userChipName">Loading…</strong>
+            </a>
+        </div>
+    </div>
+</header>
+
+<!-- Hero + Search -->
+<section class="jobs-hero">
+    <div class="container">
+        <h1>Find your next UK role</h1>
+        <p>Search <strong>live</strong> job listings from top UK employers — updated in real time via the Adzuna API.</p>
+
+        <div class="search-box">
+            <div class="search-field">
+                <i class="fas fa-magnifying-glass"></i>
+                <input type="text" id="searchQuery" placeholder="Job title, company, or keywords…" autocomplete="off">
+            </div>
+            <div class="search-field">
+                <i class="fas fa-location-dot"></i>
+                <input type="text" id="searchLocation" placeholder="Town, city or postcode (UK)…" autocomplete="off">
+            </div>
+            <div class="search-field">
+                <i class="fas fa-briefcase"></i>
+                <select id="searchType">
+                    <option value="">All job types</option>
+                    <option value="full_time">Full-time</option>
+                    <option value="part_time">Part-time</option>
+                    <option value="contract">Contract</option>
+                    <option value="permanent">Permanent</option>
+                    <option value="temporary">Temporary</option>
+                </select>
+                <i class="fas fa-chevron-down chev"></i>
+            </div>
+            <button class="search-btn" id="searchBtn">
+                <i class="fas fa-magnifying-glass"></i> Search Jobs
+            </button>
+        </div>
+
+        <div class="filter-chips">
+            <span class="chip active" data-cat=""><i class="fas fa-layer-group"></i> All Categories</span>
+            <span class="chip" data-cat="IT Jobs"><i class="fas fa-laptop-code"></i> IT</span>
+            <span class="chip" data-cat="Engineering Jobs"><i class="fas fa-gears"></i> Engineering</span>
+            <span class="chip" data-cat="Sales Jobs"><i class="fas fa-chart-line"></i> Sales</span>
+            <span class="chip" data-cat="Marketing Jobs"><i class="fas fa-bullhorn"></i> Marketing</span>
+            <span class="chip" data-cat="Healthcare & Nursing Jobs"><i class="fas fa-heart-pulse"></i> Healthcare</span>
+            <span class="chip" data-cat="Teaching Jobs"><i class="fas fa-chalkboard-user"></i> Education</span>
+            <span class="chip" data-cat="Logistics & Warehouse Jobs"><i class="fas fa-truck"></i> Logistics</span>
+            <span class="chip" data-cat="Hospitality & Catering Jobs"><i class="fas fa-utensils"></i> Hospitality</span>
+            <span class="chip" data-cat="Accounting & Finance Jobs"><i class="fas fa-calculator"></i> Finance</span>
+        </div>
+    </div>
+</section>
+
+<!-- Results -->
+<main class="jobs-main">
+    <div class="container">
+        <div class="results-bar">
+            <h2 id="resultsTitle">Searching for jobs…</h2>
+            <div class="controls">
+                <select class="sort-select" id="sortSelect">
+                    <option value="relevance">Sort: Relevance</option>
+                    <option value="date">Sort: Newest</option>
+                    <option value="salary">Sort: Highest salary</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="jobsList" class="jobs-list"></div>
+
+        <div id="stateBox" class="state-box" style="display:none;"></div>
+
+        <div class="pagination" id="pagination"></div>
+    </div>
+</main>
+
+<!-- WhatsApp float -->
+<div class="whatsapp-float">
+    <a href="https://wa.me/447536578775?text=Hi%20Vertex%20Talent%2C%20I%20saw%20a%20job%20and%20want%20to%20apply!" target="_blank" class="whatsapp-btn" title="Apply via WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+</div>
+
+<!-- Job detail modal -->
+<div class="modal-overlay" id="jobModal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeJobModal()"><i class="fas fa-xmark"></i></button>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Success</span></div>
+
+<script>
+    /* ============ CONFIG ============ */
+    // Adzuna API credentials — get free keys at https://developer.adzuna.com/
+    // Replace with your own keys, or route through your server.js for security.
+    const ADZUNA_APP_ID  = 'YOUR_APP_ID';
+    const ADZUNA_APP_KEY = 'YOUR_APP_KEY';
+    const ADZUNA_COUNTRY = 'gb';
+    const API_BASE = '/api/jobs'; // Proxied through server.js (recommended)
+
+    /* ============ STATE ============ */
+    let state = {
+        query: '',
+        location: '',
+        jobType: '',
+        category: '',
+        page: 1,
+        sort: 'relevance',
+        results: [],
+        totalResults: 0,
+        loading: false
+    };
+
+    const PER_PAGE = 20;
+
+    /* ============ ELEMENTS ============ */
+    const searchQuery = document.getElementById('searchQuery');
+    const searchLocation = document.getElementById('searchLocation');
+    const searchType = document.getElementById('searchType');
+    const searchBtn = document.getElementById('searchBtn');
+    const sortSelect = document.getElementById('sortSelect');
+    const jobsList = document.getElementById('jobsList');
+    const stateBox = document.getElementById('stateBox');
+    const pagination = document.getElementById('pagination');
+    const resultsTitle = document.getElementById('resultsTitle');
+    const jobModal = document.getElementById('jobModal');
+    const modalContent = document.getElementById('modalContent');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+
+    /* ============ TOAST ============ */
+    let toastTimer;
+    function showToast(msg, type = 'success') {
+        clearTimeout(toastTimer);
+        toastMsg.textContent = msg;
+        toast.className = 'toast show ' + type;
+        toast.querySelector('i').className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    /* ============ LOAD USER ============ */
+    (function loadUser() {
+        try {
+            const user = JSON.parse(localStorage.getItem('vertexUser')) || {};
+            const name = (user.firstName || 'Friend') + (user.lastName ? ' ' + user.lastName : '');
+            const avatar = user.avatarUrl || user.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100';
+            document.getElementById('userChipName').textContent = name;
+            document.getElementById('userChipAvatar').src = avatar;
+        } catch (e) {}
+    })();
+
+    /* ============ COLOR HELPERS ============ */
+    const logoColors = [
+        'linear-gradient(135deg, #0ea5e9, #38bdf8)',
+        'linear-gradient(135deg, #8b5cf6, #a78bfa)',
+        'linear-gradient(135deg, #f59e0b, #fbbf24)',
+        'linear-gradient(135deg, #10b981, #34d399)',
+        'linear-gradient(135deg, #ef4444, #f87171)',
+        'linear-gradient(135deg, #06b6d4, #22d3ee)',
+        'linear-gradient(135deg, #ec4899, #f472b6)',
+        'linear-gradient(135deg, #6366f1, #818cf8)'
+    ];
+    function colorFor(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        return logoColors[Math.abs(hash) % logoColors.length];
+    }
+    function initialFor(name) {
+        return (name || '?').trim().charAt(0).toUpperCase();
+    }
+    function formatSalary(min, max) {
+        if (!min && !max) return 'Salary not specified';
+        const fmt = n => '£' + Math.round(n).toLocaleString('en-GB');
+        if (min && max) return fmt(min) + ' – ' + fmt(max);
+        if (min) return 'From ' + fmt(min);
+        return 'Up to ' + fmt(max);
+    }
+    function timeAgo(dateStr) {
+        if (!dateStr) return '';
+        const diff = Date.now() - new Date(dateStr).getTime();
+        const days = Math.floor(diff / 86400000);
+        if (days < 1) return 'Today';
+        if (days === 1) return 'Yesterday';
+        if (days < 7) return days + ' days ago';
+        if (days < 30) return Math.floor(days / 7) + ' weeks ago';
+        return Math.floor(days / 30) + ' months ago';
+    }
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
+
+    /* ============ STATE UI ============ */
+    function showLoading() {
+        jobsList.innerHTML = '';
+        pagination.innerHTML = '';
+        stateBox.style.display = 'block';
+        stateBox.innerHTML = `
+            <div class="state-ico loading"><div class="spinner"></div></div>
+            <h3>Finding your perfect role…</h3>
+            <p>Fetching live jobs from UK employers. This may take a moment.</p>
+        `;
+        resultsTitle.textContent = 'Searching for jobs…';
+    }
+    function showError(msg) {
+        jobsList.innerHTML = '';
+        pagination.innerHTML = '';
+        stateBox.style.display = 'block';
+        stateBox.innerHTML = `
+            <div class="state-ico error"><i class="fas fa-triangle-exclamation"></i></div>
+            <h3>Something went wrong</h3>
+            <p>${escapeHtml(msg)}</p>
+            <button onclick="performSearch()">Try again</button>
+        `;
+        resultsTitle.textContent = 'Search failed';
+    }
+    function showEmpty() {
+        jobsList.innerHTML = '';
+        pagination.innerHTML = '';
+        stateBox.style.display = 'block';
+        stateBox.innerHTML = `
+            <div class="state-ico empty"><i class="fas fa-magnifying-glass-minus"></i></div>
+            <h3>No jobs found</h3>
+            <p>Try different keywords, a wider location, or remove some filters.</p>
+            <button onclick="resetFilters()">Reset filters</button>
+        `;
+        resultsTitle.textContent = '0 jobs found';
+    }
+    function hideState() {
+        stateBox.style.display = 'none';
+        stateBox.innerHTML = '';
+    }
+
+    /* ============ BUILD JOB CARD ============ */
+    function buildJobCard(job) {
+        const title = escapeHtml(job.title || 'Untitled role');
+        const company = escapeHtml(job.company?.display_name || job.company || 'Company');
+        const location = escapeHtml(job.location?.display_name || job.location || 'UK');
+        const salary = formatSalary(job.salary_min, job.salary_max);
+        const type = escapeHtml(job.contract_time || job.contract_type || 'Job');
+        const posted = timeAgo(job.created);
+        const desc = job.description ? job.description.replace(/<[^>]+>/g, '').slice(0, 220) : 'No description available.';
+        const color = colorFor(company);
+
+        return `
+            <div class="job-card" onclick="openJobModal('${job.id}')">
+                <div class="company-logo" style="background:${color};">${initialFor(company)}</div>
+                <div class="job-body">
+                    <h3>${title}</h3>
+                    <div class="company-name">${company}</div>
+                    <div class="meta">
+                        <span><i class="fas fa-map-marker-alt"></i> ${location}</span>
+                        <span><i class="fas fa-clock"></i> ${type.replace('_', ' ')}</span>
+                        <span><i class="fas fa-calendar"></i> ${posted}</span>
+                    </div>
+                    <p class="desc">${escapeHtml(desc)}</p>
+                </div>
+                <div class="job-side">
+                    <div class="salary">${salary}</div>
+                    <span class="job-type-tag">${type.replace('_', ' ')}</span>
+                    <button class="apply-btn" onclick="event.stopPropagation(); openJobModal('${job.id}')">View & Apply</button>
+                </div>
+            </div>
+        `;
+    }
+
+    /* ============ RENDER RESULTS ============ */
+    function renderResults() {
+        hideState();
+        if (!state.results.length) { showEmpty(); return; }
+
+        resultsTitle.innerHTML = `<span>${state.totalResults.toLocaleString('en-GB')}</span> live jobs found`;
+
+        jobsList.innerHTML = state.results.map(buildJobCard).join('');
+        renderPagination();
+    }
+
+    /* ============ PAGINATION ============ */
+    function renderPagination() {
+        const totalPages = Math.ceil(state.totalResults / PER_PAGE);
+        if (totalPages <= 1) { pagination.innerHTML = ''; return; }
+
+        let html = '';
+        html += `<button ${state.page === 1 ? 'disabled' : ''} onclick="goToPage(${state.page - 1})"><i class="fas fa-chevron-left"></i> Prev</button>`;
+
+        const maxVisible = 5;
+        let start = Math.max(1, state.page - Math.floor(maxVisible / 2));
+        let end = Math.min(totalPages, start + maxVisible - 1);
+        if (end - start + 1 < maxVisible) start = Math.max(1, end - maxVisible + 1);
+
+        if (start > 1) {
+            html += `<button onclick="goToPage(1)">1</button>`;
+            if (start > 2) html += `<button disabled>…</button>`;
+        }
+        for (let i = start; i <= end; i++) {
+            html += `<button class="${i === state.page ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+        }
+        if (end < totalPages) {
+            if (end < totalPages - 1) html += `<button disabled>…</button>`;
+            html += `<button onclick="goToPage(${totalPages})">${totalPages}</button>`;
+        }
+
+        html += `<button ${state.page === totalPages ? 'disabled' : ''} onclick="goToPage(${state.page + 1})">Next <i class="fas fa-chevron-right"></i></button>`;
+
+        pagination.innerHTML = html;
+    }
+
+    function goToPage(page) {
+        state.page = page;
+        performSearch(true);
+        window.scrollTo({ top: document.querySelector('.jobs-main').offsetTop - 100, behavior: 'smooth' });
+    }
+
+    /* ============ SEARCH LOGIC ============ */
+    async function performSearch(paginationOnly = false) {
+        if (state.loading) return;
+        state.loading = true;
+        searchBtn.disabled = true;
+
+        if (!paginationOnly) {
+            state.query = searchQuery.value.trim();
+            state.location = searchLocation.value.trim();
+            state.jobType = searchType.value;
+            state.page = 1;
+            showLoading();
+        } else {
+            // Keep UI, just show subtle loading
+        }
+
+        // Build query params for Adzuna
+        const params = new URLSearchParams();
+        params.set('what', state.query || 'jobs');
+        if (state.location) params.set('where', state.location);
+        if (state.jobType) params.set('contract_time', state.jobType);
+        if (state.category) params.set('category', state.category);
+        params.set('results_per_page', PER_PAGE);
+        params.set('page', state.page);
+        params.set('sort_by', state.sort === 'salary' ? 'salary' : state.sort === 'date' ? 'date' : 'relevance');
+        params.set('content-type', 'application/json');
+
+        try {
+            // Try server proxy first (recommended), fallback to direct Adzuna
+            let data;
+            const useProxy = true; // set to false to call Adzuna directly (CORS may block)
+
+            if (useProxy) {
+                const res = await fetch(`${API_BASE}?${params.toString()}`);
+                if (!res.ok) throw new Error('Server responded with ' + res.status);
+                data = await res.json();
+            } else {
+                // Direct Adzuna call (requires credentials + CORS support)
+                const url = `https://api.adzuna.com/v1/api/jobs/${ADZUNA_COUNTRY}/search/${state.page}?app_id=${ADZUNA_APP_ID}&app_key=${ADZUNA_APP_KEY}&${params.toString()}`;
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('Adzuna API error: ' + res.status);
+                data = await res.json();
+            }
+
+            state.results = data.results || [];
+            state.totalResults = data.count || 0;
+
+            if (!state.results.length) { showEmpty(); }
+            else { renderResults(); }
+
+        } catch (err) {
+            console.error('Search error:', err);
+            // DEMO FALLBACK: Show sample jobs if API is unavailable
+            if (state.query || state.location || state.category) {
+                // Still attempt to show demo results
+            }
+            loadDemoJobs();
+        } finally {
+            state.loading = false;
+            searchBtn.disabled = false;
+        }
+    }
+
+    /* ============ DEMO FALLBACK (when API unavailable) ============ */
+    function loadDemoJobs() {
+        const demo = [
+            { id: 'd1', title: 'Senior Software Engineer', company: { display_name: 'TechNova Ltd' }, location: { display_name: 'London, UK' }, salary_min: 65000, salary_max: 85000, contract_time: 'full_time', created: new Date(Date.now() - 3600000).toISOString(), description: 'Build scalable web applications using React, Node.js and AWS. Join a fast-growing fintech team with excellent benefits and remote flexibility.' },
+            { id: 'd2', title: 'Marketing Manager', company: { display_name: 'Brightwave Media' }, location: { display_name: 'Manchester, UK' }, salary_min: 45000, salary_max: 55000, contract_time: 'full_time', created: new Date(Date.now() - 86400000 * 2).toISOString(), description: 'Lead digital marketing campaigns across B2B channels. Drive growth through SEO, PPC and content marketing. Hybrid working.' },
+            { id: 'd3', title: 'Operations Director', company: { display_name: 'Vertex Group' }, location: { display_name: 'Birmingham, UK' }, salary_min: 90000, salary_max: 120000, contract_time: 'full_time', created: new Date(Date.now() - 86400000 * 3).toISOString(), description: 'Executive leadership role overseeing operations across 5 UK sites. Strategic planning, P&L responsibility and team development.' },
+            { id: 'd4', title: 'Warehouse Team Leader', company: { display_name: 'LogiCore' }, location: { display_name: 'Leeds, UK' }, salary_min: 28000, salary_max: 32000, contract_time: 'full_time', created: new Date(Date.now() - 86400000 * 4).toISOString(), description: 'Supervise a team of 15 warehouse operatives. Shift work with overtime. Forklift licence desirable but not essential.' },
+            { id: 'd5', title: 'Registered Nurse', company: { display_name: 'NHS Trust' }, location: { display_name: 'Bristol, UK' }, salary_min: 32000, salary_max: 42000, contract_time: 'full_time', created: new Date(Date.now() - 86400000 * 5).toISOString(), description: 'Join our award-winning NHS team. Excellent benefits, pension and career progression. NMC registration required.' },
+            { id: 'd6', title: 'Junior Graphic Designer', company: { display_name: 'CreativePulse' }, location: { display_name: 'Brighton, UK' }, salary_min: 24000, salary_max: 28000, contract_time: 'part_time', created: new Date(Date.now() - 86400000 * 6).toISOString(), description: 'Part-time role 3 days a week. Work on brand identity, social media and print design. Portfolio required. Adobe Creative Suite.' },
+            { id: 'd7', title: 'Data Analyst', company: { display_name: 'FinData Solutions' }, location: { display_name: 'Edinburgh, UK' }, salary_min: 38000, salary_max: 48000, contract_time: 'contract', created: new Date(Date.now() - 86400000 * 7).toISOString(), description: '12-month contract. SQL, Python and Power BI. Work with large datasets to drive business insights. Remote-friendly.' },
+            { id: 'd8', title: 'Customer Support Specialist', company: { display_name: 'HelpDesk Pro' }, location: { display_name: 'Remote, UK' }, salary_min: 26000, salary_max: 30000, contract_time: 'full_time', created: new Date(Date.now() - 86400000 * 8).toISOString(), description: 'Fully remote customer support role. Handle calls, emails and live chat. Full training provided. Great work-life balance.' }
+        ];
+
+        // Apply simple filter
+        let filtered = demo;
+        if (state.query) {
+            const q = state.query.toLowerCase();
+            filtered = filtered.filter(j => j.title.toLowerCase().includes(q) || j.company.display_name.toLowerCase().includes(q) || j.description.toLowerCase().includes(q));
+        }
+        if (state.location) {
+            const l = state.location.toLowerCase();
+            filtered = filtered.filter(j => j.location.display_name.toLowerCase().includes(l));
+        }
+        if (state.jobType) {
+            filtered = filtered.filter(j => (j.contract_time || '') === state.jobType);
+        }
+
+        state.results = filtered;
+        state.totalResults = filtered.length;
+
+        if (!filtered.length) { showEmpty(); return; }
+        renderResults();
+        resultsTitle.innerHTML = `<span>${filtered.length}</span> jobs found <span style="font-size:13px;color:var(--gray);font-weight:500;">(demo data — API unavailable)</span>`;
+        showToast('Live API unavailable. Showing demo jobs.', 'error');
+    }
+
+    /* ============ JOB MODAL ============ */
+    function openJobModal(jobId) {
+        const job = state.results.find(j => String(j.id) === String(jobId));
+        if (!job) return;
+
+        const title = escapeHtml(job.title || 'Untitled role');
+        const company = escapeHtml(job.company?.display_name || job.company || 'Company');
+        const location = escapeHtml(job.location?.display_name || job.location || 'UK');
+        const salary = formatSalary(job.salary_min, job.salary_max);
+        const type = escapeHtml((job.contract_time || job.contract_type || 'Job').replace('_', ' '));
+        const posted = timeAgo(job.created);
+        const desc = job.description ? job.description.replace(/<[^>]+>/g, '') : 'No description available.';
+        const color = colorFor(company);
+        const applyUrl = job.redirect_url || job.url || '#';
+
+        modalContent.innerHTML = `
+            <div class="modal-job-head">
+                <div class="company-logo" style="background:${color};">${initialFor(company)}</div>
+                <div>
+                    <h2>${title}</h2>
+                    <div class="company-name">${company}</div>
+                </div>
+            </div>
+            <div class="modal-meta-grid">
+                <div class="modal-meta-item"><div class="lbl">Location</div><div class="val">${location}</div></div>
+                <div class="modal-meta-item"><div class="lbl">Salary</div><div class="val">${salary}</div></div>
+                <div class="modal-meta-item"><div class="lbl">Job Type</div><div class="val">${type}</div></div>
+                <div class="modal-meta-item"><div class="lbl">Posted</div><div class="val">${posted}</div></div>
+            </div>
+            <div class="modal-section-title">Job Description</div>
+            <div class="modal-desc">${escapeHtml(desc)}</div>
+            <div class="modal-actions">
+                <a href="${applyUrl}" target="_blank" class="btn-apply"><i class="fas fa-paper-plane"></i> Apply on Employer Site</a>
+                <a href="https://wa.me/447536578775?text=${encodeURIComponent('Hi Vertex Talent, I am interested in the ' + title + ' role at ' + company + '.')}" target="_blank" class="btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
+            </div>
+        `;
+        jobModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeJobModal() {
+        jobModal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    jobModal.addEventListener('click', (e) => {
+        if (e.target === jobModal) closeJobModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeJobModal();
+    });
+
+    /* ============ RESET FILTERS ============ */
+    function resetFilters() {
+        searchQuery.value = '';
+        searchLocation.value = '';
+        searchType.value = '';
+        state.category = '';
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        document.querySelector('.chip[data-cat=""]').classList.add('active');
+        performSearch();
+    }
+
+    /* ============ EVENT LISTENERS ============ */
+    searchBtn.addEventListener('click', () => performSearch());
+    searchQuery.addEventListener('keydown', (e) => { if (e.key === 'Enter') performSearch(); });
+    searchLocation.addEventListener('keydown', (e) => { if (e.key === 'Enter') performSearch(); });
+    sortSelect.addEventListener('change', () => { state.sort = sortSelect.value; performSearch(); });
+
+    document.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            state.category = chip.dataset.cat || '';
+            performSearch();
+        });
+    });
+
+    /* ============ INITIAL LOAD ============ */
+    // Check for search param in URL (from dashboard)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('search')) {
+        searchQuery.value = urlParams.get('search');
+    }
+    performSearch();
+</script>
+</body>
+</html>
