@@ -1,0 +1,184 @@
+<!-- ============================================================
+     APPLICATIONS.HTML
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>My Applications | Vertex Talent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #0F2B46; --primary-soft: #244B6B; --secondary: #00A6A6;
+            --accent: #FF7B54; --gold: #FFC857; --dark: #0A1A2B; --gray: #4F6F8F;
+            --success: #10b981; --danger: #ef4444; --whatsapp: #25D366;
+            --shadow-soft: 0 20px 35px -12px rgba(0,0,0,0.06);
+            --shadow-bold: 0 28px 45px -12px rgba(0,0,0,0.18);
+        }
+        body { font-family: 'Inter', sans-serif; background: #F7FAFF; color: var(--dark); line-height: 1.5; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 28px; }
+
+        .dash-header { background: rgba(255,255,255,0.95); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,166,166,0.15); position: sticky; top: 0; z-index: 1000; padding: 14px 0; }
+        .dash-header .container { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; max-width: 1400px; }
+        .dash-logo h1 { font-size: 22px; font-weight: 800; background: linear-gradient(125deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; display: flex; align-items: center; gap: 8px; }
+        .dash-logo span { font-size: 10.5px; color: var(--gray); font-weight: 500; display: block; }
+        .header-links { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .header-links a { text-decoration: none; color: var(--gray); font-size: 13.5px; font-weight: 500; padding: 8px 16px; border-radius: 50px; transition: 0.2s; }
+        .header-links a:hover, .header-links a.active { background: var(--secondary); color: white; }
+
+        .page-head { background: linear-gradient(120deg, var(--primary), var(--primary-soft)); padding: 50px 0; color: white; }
+        .page-head h1 { font-size: 36px; font-weight: 800; letter-spacing: -0.8px; margin-bottom: 8px; }
+        .page-head p { font-size: 15px; color: rgba(255,255,255,0.8); }
+
+        .main-content { padding: 40px 0 60px; }
+        .app-tabs { display: flex; gap: 8px; margin-bottom: 26px; flex-wrap: wrap; }
+        .app-tab { padding: 10px 22px; border-radius: 50px; border: 1.5px solid #e2e8f0; background: white; font-family: inherit; font-size: 13.5px; font-weight: 600; color: var(--gray); cursor: pointer; transition: 0.2s; }
+        .app-tab.active { background: var(--secondary); border-color: var(--secondary); color: white; }
+        .app-tab:hover:not(.active) { border-color: var(--secondary); color: var(--secondary); }
+
+        .app-list { display: flex; flex-direction: column; gap: 14px; }
+        .app-card { background: white; border-radius: 20px; border: 1.5px solid #e8eef5; padding: 22px 24px; display: flex; gap: 18px; align-items: center; transition: 0.25s; }
+        .app-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-soft); border-color: rgba(0,166,166,0.3); }
+        .app-logo { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: white; flex-shrink: 0; }
+        .app-info { flex: 1; min-width: 0; }
+        .app-info h3 { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 3px; }
+        .app-info .company { font-size: 13px; color: var(--gray); font-weight: 600; margin-bottom: 6px; }
+        .app-info .meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--gray); }
+        .app-info .meta span { display: flex; align-items: center; gap: 4px; }
+        .app-status { padding: 6px 14px; border-radius: 50px; font-size: 11.5px; font-weight: 700; white-space: nowrap; }
+        .status-applied { background: rgba(0,166,166,0.12); color: var(--secondary); }
+        .status-interview { background: rgba(255,200,87,0.2); color: #d97706; }
+        .status-offer { background: rgba(16,185,129,0.12); color: var(--success); }
+        .status-rejected { background: rgba(239,68,68,0.12); color: var(--danger); }
+        .app-actions { display: flex; gap: 8px; }
+        .app-actions a { width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid #e2e8f0; background: white; display: flex; align-items: center; justify-content: center; color: var(--gray); text-decoration: none; transition: 0.2s; font-size: 13px; }
+        .app-actions a:hover { border-color: var(--secondary); color: var(--secondary); }
+
+        .empty-state { text-align: center; padding: 70px 24px; background: white; border-radius: 24px; border: 1.5px solid #e8eef5; }
+        .empty-state i { font-size: 48px; color: #cbd5e1; margin-bottom: 16px; }
+        .empty-state h3 { font-size: 20px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
+        .empty-state p { font-size: 14px; color: var(--gray); margin-bottom: 22px; }
+        .empty-state a { padding: 12px 28px; border-radius: 50px; background: var(--secondary); color: white; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; }
+
+        .whatsapp-float { position: fixed; bottom: 28px; right: 28px; z-index: 999; }
+        .whatsapp-btn { width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, #25D366, #128C7E); display: flex; align-items: center; justify-content: center; color: white; font-size: 27px; text-decoration: none; box-shadow: 0 10px 30px rgba(37,211,102,0.4); border: 3px solid white; transition: 0.3s; }
+        .whatsapp-btn:hover { transform: scale(1.1); }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 18px; }
+            .app-card { flex-wrap: wrap; }
+            .app-actions { margin-left: auto; }
+            .header-links a:not(.user-chip) { display: none; }
+            .page-head h1 { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="dash-header">
+    <div class="container">
+        <div class="dash-logo">
+            <h1><i class="fas fa-bolt"></i> Vertex Talent</h1>
+            <span>MY APPLICATIONS</span>
+        </div>
+        <div class="header-links">
+            <a href="dashboard.html"><i class="fas fa-house"></i> Dashboard</a>
+            <a href="jobs.html"><i class="fas fa-briefcase"></i> Jobs</a>
+            <a href="applications.html" class="active"><i class="fas fa-paper-plane"></i> Applications</a>
+            <a href="chat.html"><i class="fas fa-comments"></i> Chat</a>
+        </div>
+    </div>
+</header>
+
+<section class="page-head">
+    <div class="container">
+        <h1>My Applications</h1>
+        <p>Track the status of every job you've applied for — all in one place.</p>
+    </div>
+</section>
+
+<main class="main-content">
+    <div class="container">
+        <div class="app-tabs">
+            <button class="app-tab active" data-filter="all">All (4)</button>
+            <button class="app-tab" data-filter="applied">Applied</button>
+            <button class="app-tab" data-filter="interview">Interview</button>
+            <button class="app-tab" data-filter="offer">Offer</button>
+            <button class="app-tab" data-filter="rejected">Rejected</button>
+        </div>
+
+        <div class="app-list" id="appList"></div>
+    </div>
+</main>
+
+<div class="whatsapp-float">
+    <a href="https://wa.me/447536578775" target="_blank" class="whatsapp-btn" title="WhatsApp Support"><i class="fab fa-whatsapp"></i></a>
+</div>
+
+<script>
+    const applications = [
+        { id: 1, title: 'Senior Frontend Developer', company: 'TechNova Ltd', location: 'London, UK', date: '2 hours ago', status: 'applied', color: 'linear-gradient(135deg,#0ea5e9,#38bdf8)' },
+        { id: 2, title: 'Marketing Manager', company: 'Brightwave Media', location: 'Manchester, UK', date: 'Yesterday', status: 'interview', color: 'linear-gradient(135deg,#8b5cf6,#a78bfa)' },
+        { id: 3, title: 'Operations Director', company: 'Vertex Group', location: 'Birmingham, UK', date: '3 days ago', status: 'offer', color: 'linear-gradient(135deg,#10b981,#34d399)' },
+        { id: 4, title: 'Warehouse Team Leader', company: 'LogiCore', location: 'Leeds, UK', date: '5 days ago', status: 'rejected', color: 'linear-gradient(135deg,#ef4444,#f87171)' }
+    ];
+
+    const appList = document.getElementById('appList');
+    let activeFilter = 'all';
+
+    function statusLabel(s) {
+        return { applied: 'Applied', interview: 'Interview Scheduled', offer: 'Offer Received', rejected: 'Not Selected' }[s] || s;
+    }
+
+    function renderApps() {
+        const filtered = activeFilter === 'all' ? applications : applications.filter(a => a.status === activeFilter);
+
+        if (!filtered.length) {
+            appList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <h3>No applications here</h3>
+                    <p>You haven't applied to any jobs in this category yet.</p>
+                    <a href="jobs.html"><i class="fas fa-magnifying-glass"></i> Find Jobs</a>
+                </div>
+            `;
+            return;
+        }
+
+        appList.innerHTML = filtered.map(a => `
+            <div class="app-card">
+                <div class="app-logo" style="background:${a.color};">${a.company.charAt(0)}</div>
+                <div class="app-info">
+                    <h3>${a.title}</h3>
+                    <div class="company">${a.company}</div>
+                    <div class="meta">
+                        <span><i class="fas fa-map-marker-alt"></i> ${a.location}</span>
+                        <span><i class="fas fa-clock"></i> Applied ${a.date}</span>
+                    </div>
+                </div>
+                <span class="app-status status-${a.status}">${statusLabel(a.status)}</span>
+                <div class="app-actions">
+                    <a href="jobs.html" title="View job"><i class="fas fa-eye"></i></a>
+                    <a href="https://wa.me/447536578775?text=${encodeURIComponent('Hi, I want to follow up on my application for ' + a.title + ' at ' + a.company)}" target="_blank" title="Follow up on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        `).join('');
+    }
+    renderApps();
+
+    document.querySelectorAll('.app-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.app-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            activeFilter = tab.dataset.filter;
+            renderApps();
+        });
+    });
+</script>
+</body>
+</html>
