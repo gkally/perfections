@@ -1,0 +1,276 @@
+<!-- ============================================================
+     PROFILE.HTML
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>My Profile | Vertex Talent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #0F2B46; --primary-dark: #081C2F; --primary-soft: #244B6B;
+            --secondary: #00A6A6; --secondary-glow: #2DD4BF; --accent: #FF7B54;
+            --gold: #FFC857; --dark: #0A1A2B; --gray: #4F6F8F; --white: #FFFFFF;
+            --danger: #ef4444; --success: #10b981; --whatsapp: #25D366;
+            --shadow-soft: 0 20px 35px -12px rgba(0,0,0,0.06);
+            --shadow-bold: 0 28px 45px -12px rgba(0,0,0,0.18);
+        }
+        body { font-family: 'Inter', sans-serif; background: #F7FAFF; color: var(--dark); line-height: 1.5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+
+        .dash-header { background: rgba(255,255,255,0.95); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,166,166,0.15); position: sticky; top: 0; z-index: 1000; padding: 14px 0; }
+        .dash-header .container { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; max-width: 1400px; }
+        .dash-logo h1 { font-size: 22px; font-weight: 800; background: linear-gradient(125deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; display: flex; align-items: center; gap: 8px; }
+        .dash-logo span { font-size: 10.5px; color: var(--gray); font-weight: 500; display: block; }
+        .header-links { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .header-links a { text-decoration: none; color: var(--gray); font-size: 13.5px; font-weight: 500; padding: 8px 16px; border-radius: 50px; transition: 0.2s; }
+        .header-links a:hover, .header-links a.active { background: var(--secondary); color: white; }
+
+        .profile-hero {
+            background: linear-gradient(120deg, var(--primary), var(--primary-soft));
+            padding: 60px 0 80px; position: relative; overflow: hidden;
+        }
+        .profile-hero::before { content: ''; position: absolute; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(0,166,166,0.25), transparent 70%); top: -200px; right: -100px; }
+        .profile-hero-content { position: relative; z-index: 2; display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
+        .profile-avatar-big { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 5px solid var(--secondary-glow); box-shadow: 0 12px 30px rgba(0,0,0,0.3); flex-shrink: 0; }
+        .profile-hero-info { color: white; }
+        .profile-hero-info h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.8px; margin-bottom: 6px; }
+        .profile-hero-info .role { font-size: 16px; color: var(--gold); font-weight: 600; margin-bottom: 10px; }
+        .profile-hero-info .meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 13.5px; color: rgba(255,255,255,0.8); }
+        .profile-hero-info .meta span { display: flex; align-items: center; gap: 6px; }
+
+        .profile-main { padding: 40px 0 60px; }
+        .profile-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 28px; }
+
+        .card { background: white; border-radius: 24px; border: 1.5px solid #e8eef5; padding: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+        .card + .card { margin-top: 24px; }
+        .card h3 { font-size: 17px; font-weight: 800; color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .card h3 i { color: var(--secondary); font-size: 15px; }
+
+        .completeness-ring { text-align: center; margin-bottom: 20px; }
+        .ring-wrap { position: relative; width: 130px; height: 130px; margin: 0 auto 14px; }
+        .ring-wrap svg { transform: rotate(-90deg); }
+        .ring-wrap .ring-val { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800; color: var(--primary); }
+        .completeness-ring p { font-size: 13px; color: var(--gray); }
+
+        .info-list { display: flex; flex-direction: column; gap: 16px; }
+        .info-item { display: flex; gap: 14px; align-items: flex-start; }
+        .info-item .ico { width: 38px; height: 38px; border-radius: 12px; background: rgba(0,166,166,0.1); color: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+        .info-item .text .lbl { font-size: 11px; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+        .info-item .text .val { font-size: 14px; color: var(--primary); font-weight: 600; word-break: break-word; }
+
+        .edit-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        .edit-form .form-row.full { grid-template-columns: 1fr; }
+        .edit-form label { display: block; font-size: 12.5px; font-weight: 600; color: var(--primary); margin-bottom: 6px; }
+        .edit-form input, .edit-form select { width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 12px; font-size: 14px; font-family: inherit; background: #FAFCFF; outline: none; transition: 0.2s; }
+        .edit-form input:focus, .edit-form select:focus { border-color: var(--secondary); background: white; box-shadow: 0 0 0 4px rgba(0,166,166,0.08); }
+
+        .save-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: linear-gradient(125deg, var(--secondary), var(--primary)); color: white; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; transition: 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; }
+        .save-btn:hover { transform: translateY(-2px); background: linear-gradient(125deg, var(--accent), var(--primary)); }
+
+        .toast { position: fixed; top: 24px; right: 24px; z-index: 10001; padding: 14px 22px; border-radius: 14px; background: white; box-shadow: var(--shadow-bold); display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; transform: translateX(400px); transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); border-left: 4px solid var(--success); }
+        .toast.show { transform: translateX(0); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast i { font-size: 18px; }
+        .toast.success i { color: var(--success); }
+        .toast.error i { color: var(--danger); }
+
+        .whatsapp-float { position: fixed; bottom: 28px; right: 28px; z-index: 999; }
+        .whatsapp-btn { width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, #25D366, #128C7E); display: flex; align-items: center; justify-content: center; color: white; font-size: 27px; text-decoration: none; box-shadow: 0 10px 30px rgba(37,211,102,0.4); border: 3px solid white; transition: 0.3s; }
+        .whatsapp-btn:hover { transform: scale(1.1); }
+
+        @media (max-width: 992px) { .profile-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .container { padding: 0 18px; }
+            .header-links a:not(.user-chip) { display: none; }
+            .profile-hero-info h1 { font-size: 26px; }
+            .profile-avatar-big { width: 100px; height: 100px; }
+            .edit-form .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="dash-header">
+    <div class="container">
+        <div class="dash-logo">
+            <h1><i class="fas fa-bolt"></i> Vertex Talent</h1>
+            <span>MY PROFILE</span>
+        </div>
+        <div class="header-links">
+            <a href="dashboard.html"><i class="fas fa-house"></i> Dashboard</a>
+            <a href="jobs.html"><i class="fas fa-briefcase"></i> Jobs</a>
+            <a href="chat.html"><i class="fas fa-comments"></i> Chat</a>
+            <a href="profile.html" class="active"><i class="fas fa-user"></i> Profile</a>
+        </div>
+    </div>
+</header>
+
+<section class="profile-hero">
+    <div class="container">
+        <div class="profile-hero-content">
+            <img id="profileAvatarBig" class="profile-avatar-big" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300" alt="Profile">
+            <div class="profile-hero-info">
+                <h1 id="profileFullName">Loading…</h1>
+                <div class="role" id="profileJobType">Job Seeker</div>
+                <div class="meta">
+                    <span><i class="fas fa-envelope"></i> <span id="profileEmail">—</span></span>
+                    <span><i class="fas fa-phone"></i> <span id="profilePhone">—</span></span>
+                    <span><i class="fas fa-map-marker-alt"></i> <span id="profileLocation">—</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main class="profile-main">
+    <div class="container">
+        <div class="profile-grid">
+            <div>
+                <div class="card">
+                    <div class="completeness-ring">
+                        <div class="ring-wrap">
+                            <svg width="130" height="130">
+                                <circle cx="65" cy="65" r="56" stroke="#e2e8f0" stroke-width="10" fill="none"/>
+                                <circle cx="65" cy="65" r="56" stroke="url(#grad)" stroke-width="10" fill="none"
+                                    stroke-linecap="round" stroke-dasharray="351.86" stroke-dashoffset="87.96"/>
+                                <defs>
+                                    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#00A6A6"/>
+                                        <stop offset="100%" stop-color="#FFC857"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="ring-val">75%</div>
+                        </div>
+                        <p>Your profile is 75% complete — add a bio to reach 100%</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-address-card"></i> Account Details</h3>
+                    <div class="info-list">
+                        <div class="info-item"><div class="ico"><i class="fas fa-user"></i></div><div class="text"><div class="lbl">Full Name</div><div class="val" id="sideFullName">—</div></div></div>
+                        <div class="info-item"><div class="ico"><i class="fas fa-envelope"></i></div><div class="text"><div class="lbl">Email</div><div class="val" id="sideEmail">—</div></div></div>
+                        <div class="info-item"><div class="ico"><i class="fas fa-phone"></i></div><div class="text"><div class="lbl">Phone</div><div class="val" id="sidePhone">—</div></div></div>
+                        <div class="info-item"><div class="ico"><i class="fas fa-briefcase"></i></div><div class="text"><div class="lbl">Desired Job Type</div><div class="val" id="sideJobType">—</div></div></div>
+                        <div class="info-item"><div class="ico"><i class="fas fa-house"></i></div><div class="text"><div class="lbl">Address</div><div class="val" id="sideAddress">—</div></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <h3><i class="fas fa-pen"></i> Edit Your Details</h3>
+                    <form class="edit-form" id="profileForm">
+                        <div class="form-row">
+                            <div><label>First Name</label><input type="text" id="editFirstName" required></div>
+                            <div><label>Last Name</label><input type="text" id="editLastName" required></div>
+                        </div>
+                        <div class="form-row">
+                            <div><label>Email</label><input type="email" id="editEmail" required></div>
+                            <div><label>Phone</label><input type="tel" id="editPhone" required></div>
+                        </div>
+                        <div class="form-row full">
+                            <div><label>Job Type You Want</label>
+                                <select id="editJobType">
+                                    <option value="Permanent Full-Time">Permanent Full-Time</option>
+                                    <option value="Permanent Part-Time">Permanent Part-Time</option>
+                                    <option value="Temporary / Contract">Temporary / Contract</option>
+                                    <option value="Executive / C-Suite">Executive / C-Suite</option>
+                                    <option value="Internship / Graduate">Internship / Graduate</option>
+                                    <option value="Remote / Hybrid">Remote / Hybrid</option>
+                                    <option value="Freelance">Freelance</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row full">
+                            <div><label>Address</label><input type="text" id="editAddress" placeholder="123 High Street, London, SW1A 1AA"></div>
+                        </div>
+                        <button type="submit" class="save-btn"><i class="fas fa-check"></i> Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Success</span></div>
+
+<div class="whatsapp-float">
+    <a href="https://wa.me/447536578775" target="_blank" class="whatsapp-btn" title="WhatsApp Support"><i class="fab fa-whatsapp"></i></a>
+</div>
+
+<script>
+    let user = {};
+    try { user = JSON.parse(localStorage.getItem('vertexUser')) || {}; } catch (e) { user = {}; }
+
+    const DEFAULT_AVATAR = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300';
+
+    function fillProfile() {
+        const firstName = user.firstName || 'Friend';
+        const lastName = user.lastName || '';
+        const fullName = (firstName + ' ' + lastName).trim();
+        const avatar = user.avatarUrl || user.avatar || DEFAULT_AVATAR;
+        const email = user.email || 'Not set';
+        const phone = user.phone || 'Not set';
+        const jobType = user.jobType || 'Job Seeker';
+        const address = user.address || (user.addressLine1 ? user.addressLine1 + ', ' + (user.city || '') + ' ' + (user.postcode || '') : 'Not set');
+
+        document.getElementById('profileFullName').textContent = fullName;
+        document.getElementById('profileAvatarBig').src = avatar;
+        document.getElementById('profileJobType').textContent = jobType;
+        document.getElementById('profileEmail').textContent = email;
+        document.getElementById('profilePhone').textContent = phone;
+        document.getElementById('profileLocation').textContent = address.split(',')[0] || 'UK';
+
+        document.getElementById('sideFullName').textContent = fullName;
+        document.getElementById('sideEmail').textContent = email;
+        document.getElementById('sidePhone').textContent = phone;
+        document.getElementById('sideJobType').textContent = jobType;
+        document.getElementById('sideAddress').textContent = address;
+
+        document.getElementById('editFirstName').value = firstName;
+        document.getElementById('editLastName').value = lastName;
+        document.getElementById('editEmail').value = user.email || '';
+        document.getElementById('editPhone').value = user.phone || '';
+        document.getElementById('editJobType').value = jobType;
+        document.getElementById('editAddress').value = address === 'Not set' ? '' : address;
+    }
+    fillProfile();
+
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+    let toastTimer;
+    function showToast(msg, type = 'success') {
+        clearTimeout(toastTimer);
+        toastMsg.textContent = msg;
+        toast.className = 'toast show ' + type;
+        toast.querySelector('i').className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const updated = {
+            ...user,
+            firstName: document.getElementById('editFirstName').value.trim(),
+            lastName: document.getElementById('editLastName').value.trim(),
+            email: document.getElementById('editEmail').value.trim(),
+            phone: document.getElementById('editPhone').value.trim(),
+            jobType: document.getElementById('editJobType').value,
+            address: document.getElementById('editAddress').value.trim()
+        };
+        user = updated;
+        localStorage.setItem('vertexUser', JSON.stringify(updated));
+        fillProfile();
+        showToast('Profile updated successfully!', 'success');
+    });
+</script>
+</body>
+</html>
