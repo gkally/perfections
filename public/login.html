@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Login | Vertex Talent — Welcome Back</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #0F2B46;
+            --primary-dark: #081C2F;
+            --primary-soft: #244B6B;
+            --secondary: #00A6A6;
+            --secondary-glow: #2DD4BF;
+            --accent: #FF7B54;
+            --accent-glow: #FF9B7A;
+            --gold: #FFC857;
+            --dark: #0A1A2B;
+            --gray: #4F6F8F;
+            --light-mist: #F2F7FF;
+            --white: #FFFFFF;
+            --danger: #ef4444;
+            --success: #10b981;
+            --shadow-soft: 0 20px 35px -12px rgba(0,0,0,0.06);
+            --shadow-bold: 0 28px 45px -12px rgba(0,0,0,0.18);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FBFDFF;
+            color: var(--dark);
+            line-height: 1.5;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ============ SPLIT SCREEN LAYOUT ============ */
+        .login-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 100vh;
+        }
+
+        /* ---- LEFT PANEL (Visual/Branding) ---- */
+        .login-visual {
+            background: linear-gradient(150deg, rgba(15,43,70,0.94), rgba(8,28,47,0.97)), 
+                        url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1400');
+            background-size: cover;
+            background-position: center;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+        .login-visual::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,166,166,0.15), transparent 70%);
+            top: -150px;
+            right: -150px;
+            pointer-events: none;
+        }
+        .login-visual::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,123,84,0.1), transparent 70%);
+            bottom: -100px;
+            left: -100px;
+            pointer-events: none;
+        }
+
+        .visual-logo {
+            position: relative;
+            z-index: 2;
+        }
+        .visual-logo h1 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .visual-logo h1 i {
+            color: var(--secondary-glow);
+            font-size: 24px;
+        }
+        .visual-logo span {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .visual-content {
+            position: relative;
+            z-index: 2;
+            max-width: 440px;
+        }
+        .visual-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(0,166,166,0.4);
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            backdrop-filter: blur(6px);
+        }
+        .visual-badge i { color: var(--secondary-glow); }
+
+        .visual-title {
+            font-size: 46px;
+            font-weight: 800;
+            line-height: 1.12;
+            letter-spacing: -1.5px;
+            margin-bottom: 20px;
+        }
+        .visual-title span { color: var(--secondary-glow); }
+        .visual-sub {
+            font-size: 16px;
+            color: rgba(255,255,255,0.75);
+            margin-bottom: 36px;
+            line-height: 1.6;
+        }
+
+        .visual-stats {
+            display: flex;
+            gap: 36px;
+            margin-bottom: 36px;
+        }
+        .visual-stat .num {
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--gold);
+            line-height: 1;
+        }
+        .visual-stat .lbl {
+            font-size: 12.5px;
+            color: rgba(255,255,255,0.65);
+            margin-top: 4px;
+        }
+
+        .visual-testimonial {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 20px;
+            padding: 22px;
+            position: relative;
+            z-index: 2;
+        }
+        .visual-testimonial .stars {
+            color: var(--gold);
+            font-size: 13px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 3px;
+        }
+        .visual-testimonial p {
+            font-size: 14px;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.55;
+            margin-bottom: 14px;
+            font-style: italic;
+        }
+        .visual-testimonial .author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .visual-testimonial .author img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        .visual-testimonial .author strong {
+            font-size: 13.5px;
+            display: block;
+            color: white;
+        }
+        .visual-testimonial .author span {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .visual-footer {
+            position: relative;
+            z-index: 2;
+            font-size: 12.5px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* ---- RIGHT PANEL (Login Form) ---- */
+        .login-form-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px;
+            background: 
+                radial-gradient(circle at 80% 20%, rgba(0,166,166,0.06), transparent 40%),
+                radial-gradient(circle at 20% 80%, rgba(255,123,84,0.05), transparent 40%),
+                #FBFDFF;
+        }
+
+        .login-form-wrapper {
+            width: 100%;
+            max-width: 440px;
+            animation: fadeInUp 0.6s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-header {
+            margin-bottom: 32px;
+        }
+        .form-header h2 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.8px;
+            margin-bottom: 8px;
+        }
+        .form-header p {
+            font-size: 15px;
+            color: var(--gray);
+        }
+        .form-header p a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .form-header p a:hover { text-decoration: underline; }
+
+        /* Tab switcher */
+        .login-tabs {
+            display: flex;
+            gap: 4px;
+            background: #eef2f7;
+            padding: 5px;
+            border-radius: 14px;
+            margin-bottom: 28px;
+        }
+        .login-tab {
+            flex: 1;
+            padding: 11px;
+            border: none;
+            background: transparent;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--gray);
+            cursor: pointer;
+            transition: 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+        }
+        .login-tab.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        .login-tab i { font-size: 13px; }
+
+        /* Form fields */
+        .login-field {
+            margin-bottom: 18px;
+        }
+        .login-field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 7px;
+        }
+        .login-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .login-input-wrap i.lead {
+            position: absolute;
+            left: 16px;
+            color: #94a3b8;
+            font-size: 14px;
+            pointer-events: none;
+            transition: 0.2s;
+        }
+        .login-input-wrap input {
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 14.5px;
+            font-family: inherit;
+            color: var(--dark);
+            background: #FAFCFF;
+            transition: 0.2s;
+            outline: none;
+        }
+        .login-input-wrap input:focus {
+            border-color: var(--secondary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0,166,166,0.1);
+        }
+        .login-input-wrap input:focus + i.lead {
+            color: var(--secondary);
+        }
+        .login-input-wrap input.error {
+            border-color: var(--danger);
+            background: #fef2f2;
+        }
+        .toggle-pw {
+            position: absolute;
+            right: 16px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 15px;
+            padding: 4px;
+            transition: 0.2s;
+        }
+        .toggle-pw:hover { color: var(--secondary); }
+
+        .err-msg {
+            font-size: 11.5px;
+            color: var(--danger);
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 4px;
+            margin-top: 6px;
+        }
+        .err-msg.show { display: flex; }
+
+        /* Options row */
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 13.5px;
+            color: var(--gray);
+            user-select: none;
+        }
+        .remember-me input {
+            display: none;
+        }
+        .checkbox-box {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            color: white;
+            font-size: 11px;
+        }
+        .remember-me input:checked + .checkbox-box {
+            background: var(--secondary);
+            border-color: var(--secondary);
+        }
+        .forgot-link {
+            font-size: 13.5px;
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .forgot-link:hover { text-decoration: underline; }
+
+        /* Submit button */
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(125deg, var(--secondary), var(--primary));
+            color: white;
+            font-size: 15.5px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 12px 25px -6px rgba(0,166,166,0.4);
+        }
+        .login-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 32px -8px rgba(0,166,166,0.5);
+            background: linear-gradient(125deg, var(--accent), var(--primary));
+        }
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 26px 0;
+        }
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+        .divider span {
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* Social login */
+        .social-login {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 26px;
+        }
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            padding: 12px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            font-size: 13.5px;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--dark);
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+        .social-btn:hover {
+            border-color: var(--secondary);
+            background: #FAFCFF;
+            transform: translateY(-1px);
+        }
+        .social-btn i { font-size: 16px; }
+        .social-btn .fa-google { color: #EA4335; }
+        .social-btn .fa-linkedin-in { color: #0A66C2; }
+
+        /* Bottom link */
+        .bottom-cta {
+            text-align: center;
+            font-size: 14px;
+            color: var(--gray);
+        }
+        .bottom-cta a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .bottom-cta a:hover { text-decoration: underline; }
+
+        /* ============ PIN LOGIN STYLES ============ */
+        .pin-login-area {
+            display: none;
+        }
+        .pin-login-area.active {
+            display: block;
+            animation: fadeInUp 0.4s ease;
+        }
+        .email-login-area {
+            display: none;
+        }
+        .email-login-area.active {
+            display: block;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        .pin-display-info {
+            background: linear-gradient(135deg, rgba(0,166,166,0.08), rgba(15,43,70,0.04));
+            border: 1.5px solid rgba(0,166,166,0.2);
+            border-radius: 14px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .pin-display-info i {
+            color: var(--secondary);
+            font-size: 18px;
+        }
+        .pin-display-info p {
+            font-size: 13px;
+            color: var(--gray);
+            line-height: 1.4;
+        }
+        .pin-display-info strong { color: var(--primary); }
+
+        .pin-inputs {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .pin-digit {
+            width: 100%;
+            aspect-ratio: 1 / 1.15;
+            border: 1.5px solid #d5e0ea;
+            border-radius: 14px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 800;
+            font-family: inherit;
+            color: var(--primary);
+            background: white;
+            outline: none;
+            transition: 0.2s;
+            caret-color: var(--secondary);
+            -moz-appearance: textfield;
+        }
+        .pin-digit::-webkit-outer-spin-button,
+        .pin-digit::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .pin-digit:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(0,166,166,0.13);
+            transform: translateY(-2px);
+        }
+        .pin-digit.filled {
+            border-color: var(--secondary);
+            background: rgba(0,166,166,0.06);
+        }
+        .pin-digit.error {
+            border-color: var(--danger);
+            background: #fef2f2;
+            animation: shake 0.35s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        .pin-err {
+            font-size: 12px;
+            color: var(--danger);
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 16px;
+        }
+        .pin-err.show { display: flex; }
+
+        /* ============ SUCCESS OVERLAY ============ */
+        .success-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: linear-gradient(135deg, rgba(15,43,70,0.97), rgba(8,28,47,0.98));
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 28px;
+            color: white;
+            backdrop-filter: blur(8px);
+        }
+        .success-overlay.active { display: flex; }
+
+        .success-circle {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-glow));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            position: relative;
+            box-shadow: 0 0 0 0 rgba(0,166,166,0.6);
+            animation: pulseRing 1.8s ease-out infinite;
+        }
+        @keyframes pulseRing {
+            0% { box-shadow: 0 0 0 0 rgba(0,166,166,0.6); }
+            70% { box-shadow: 0 0 0 40px rgba(0,166,166,0); }
+            100% { box-shadow: 0 0 0 0 rgba(0,166,166,0); }
+        }
+        .success-circle svg {
+            width: 70px;
+            height: 70px;
+        }
+        .success-circle path {
+            stroke: white;
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: drawCheck 0.7s 0.3s ease forwards;
+        }
+        @keyframes drawCheck {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .success-overlay h2 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+            animation: fadeUp 0.6s 0.2s both;
+        }
+        .success-overlay p {
+            font-size: 16px;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            animation: fadeUp 0.6s 0.4s both;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .success-name {
+            color: var(--secondary-glow);
+            font-weight: 700;
+        }
+
+        .redirect-box {
+            margin-top: 32px;
+            padding: 16px 28px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            animation: fadeUp 0.6s 0.6s both;
+        }
+        .redirect-box .spinner {
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(255,255,255,0.25);
+            border-top-color: var(--secondary-glow);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .redirect-box span {
+            font-size: 14px;
+            color: #e2eef7;
+        }
+        .redirect-countdown {
+            font-weight: 800;
+            color: var(--gold);
+            font-size: 18px;
+            min-width: 24px;
+            display: inline-block;
+        }
+
+        .progress-bar-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--secondary), var(--gold));
+            width: 0%;
+            animation: fillProgress 3s linear forwards;
+            z-index: 10000;
+        }
+        @keyframes fillProgress {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 10001;
+            padding: 14px 22px;
+            border-radius: 14px;
+            background: white;
+            box-shadow: var(--shadow-bold);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-left: 4px solid var(--success);
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast i { font-size: 18px; }
+        .toast.success i { color: var(--success); }
+        .toast.error i { color: var(--danger); }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1024px) {
+            .login-container { grid-template-columns: 1fr; }
+            .login-visual { display: none; }
+            .login-form-panel { min-height: 100vh; padding: 32px 24px; }
+            .login-form-wrapper { max-width: 460px; }
+        }
+        @media (max-width: 640px) {
+            .login-form-panel { padding: 24px 18px; }
+            .form-header h2 { font-size: 26px; }
+            .pin-digit { font-size: 20px; border-radius: 12px; }
+            .pin-inputs { gap: 7px; }
+            .social-login { grid-template-columns: 1fr; }
+            .success-overlay h2 { font-size: 24px; }
+            .success-circle { width: 100px; height: 100px; }
+            .success-circle svg { width: 54px; height: 54px; }
+            .login-tabs { margin-bottom: 22px; }
+            .login-tab { font-size: 12.5px; padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <!-- ============ LEFT VISUAL PANEL ============ -->
+    <aside class="login-visual">
+        <div class="visual-logo">
+            <h1><i class="fas fa-bolt"></i> Vertex Talent</h1>
+            <span>UK & GLOBAL · ELITE RECRUITMENT</span>
+        </div>
+
+        <div class="visual-content">
+            <div class="visual-badge"><i class="fas fa-crown"></i> Trusted by 12,000+ professionals</div>
+            <h2 class="visual-title">Welcome back to your <span>career journey</span>.</h2>
+            <p class="visual-sub">Log in to access your personalised dashboard, track applications, and connect with top UK employers — all in one place.</p>
+
+            <div class="visual-stats">
+                <div class="visual-stat">
+                    <div class="num">650+</div>
+                    <div class="lbl">Placements 2025</div>
+                </div>
+                <div class="visual-stat">
+                    <div class="num">27</div>
+                    <div class="lbl">UK Regions</div>
+                </div>
+                <div class="visual-stat">
+                    <div class="num">96%</div>
+                    <div class="lbl">Retention</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="visual-testimonial">
+            <div class="stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <p>"Vertex Talent matched me with my dream role in just 3 weeks. The 24/7 live chat support made the entire process seamless."</p>
+            <div class="author">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" alt="Clara">
+                <div>
+                    <strong>Clara Mitchell</strong>
+                    <span>Marketing Director, London</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="visual-footer">
+            © 2026 Vertex Talent Ltd. All rights reserved.
+        </div>
+    </aside>
+
+    <!-- ============ RIGHT FORM PANEL ============ -->
+    <main class="login-form-panel">
+        <div class="login-form-wrapper">
+            <div class="form-header">
+                <h2>Welcome back 👋</h2>
+                <p>Don't have an account? <a href="register.html">Join us free</a></p>
+            </div>
+
+            <!-- Tab Switcher: PIN vs Email -->
+            <div class="login-tabs">
+                <button class="login-tab active" id="tabPin" onclick="switchTab('pin')">
+                    <i class="fas fa-key"></i> PIN Login
+                </button>
+                <button class="login-tab" id="tabEmail" onclick="switchTab('email')">
+                    <i class="fas fa-envelope"></i> Email & Password
+                </button>
+            </div>
+
+            <!-- ============ PIN LOGIN FORM ============ -->
+            <div class="pin-login-area active" id="pinLoginArea">
+                <div class="pin-display-info">
+                    <i class="fas fa-shield-halved"></i>
+                    <p>Enter your <strong>6-digit secure PIN</strong> to access your Vertex Talent account instantly.</p>
+                </div>
+
+                <form id="pinLoginForm" novalidate>
+                    <div class="pin-inputs" id="pinLoginInputs">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" aria-label="PIN digit 1" autocomplete="off">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" aria-label="PIN digit 2" autocomplete="off">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" aria-label="PIN digit 3" autocomplete="off">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" aria-label="PIN digit 4" autocomplete="off">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" aria-label="PIN digit 5" autocomplete="off">
+                        <input type="password" class="pin-digit" inputmode="numeric" maxlength="1" aria-label="PIN digit 6" autocomplete="off">
+                    </div>
+                    <div class="pin-err" id="pinLoginErr"><i class="fas fa-exclamation-circle"></i> Please enter your complete 6-digit PIN.</div>
+
+                    <div class="login-options">
+                        <label class="remember-me">
+                            <input type="checkbox" id="rememberPin">
+                            <span class="checkbox-box"><i class="fas fa-check"></i></span>
+                            Keep me signed in
+                        </label>
+                        <a href="#" class="forgot-link">Forgot PIN?</a>
+                    </div>
+
+                    <button type="submit" class="login-btn" id="pinSubmitBtn">
+                        <i class="fas fa-arrow-right-to-bracket"></i>
+                        <span>Login with PIN</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- ============ EMAIL & PASSWORD LOGIN FORM ============ -->
+            <div class="email-login-area" id="emailLoginArea">
+                <form id="emailLoginForm" novalidate>
+                    <div class="login-field">
+                        <label for="loginEmail">Email Address</label>
+                        <div class="login-input-wrap">
+                            <input type="email" id="loginEmail" placeholder="john.smith@example.com" autocomplete="email" required>
+                            <i class="fas fa-envelope lead"></i>
+                        </div>
+                        <span class="err-msg" id="err-loginEmail"><i class="fas fa-exclamation-circle"></i> Please enter a valid email address.</span>
+                    </div>
+
+                    <div class="login-field">
+                        <label for="loginPassword">Password</label>
+                        <div class="login-input-wrap">
+                            <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password" required>
+                            <i class="fas fa-lock lead"></i>
+                            <button type="button" class="toggle-pw" id="togglePw" aria-label="Show password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <span class="err-msg" id="err-loginPassword"><i class="fas fa-exclamation-circle"></i> Please enter your password.</span>
+                    </div>
+
+                    <div class="login-options">
+                        <label class="remember-me">
+                            <input type="checkbox" id="rememberEmail">
+                            <span class="checkbox-box"><i class="fas fa-check"></i></span>
+                            Remember me
+                        </label>
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="login-btn" id="emailSubmitBtn">
+                        <i class="fas fa-arrow-right-to-bracket"></i>
+                        <span>Login to Account</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Divider & Social -->
+            <div class="divider"><span>or continue with</span></div>
+
+            <div class="social-login">
+                <a href="#" class="social-btn" onclick="showToast('Google login coming soon!', 'error'); return false;">
+                    <i class="fab fa-google"></i> Google
+                </a>
+                <a href="#" class="social-btn" onclick="showToast('LinkedIn login coming soon!', 'error'); return false;">
+                    <i class="fab fa-linkedin-in"></i> LinkedIn
+                </a>
+            </div>
+
+            <div class="bottom-cta">
+                New to Vertex Talent? <a href="register.html">Create a free account →</a>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ============ SUCCESS OVERLAY ============ -->
+<div class="success-overlay" id="successOverlay">
+    <div class="success-circle">
+        <svg viewBox="0 0 100 100">
+            <path d="M25 52 L43 70 L78 32" />
+        </svg>
+    </div>
+    <h2>Welcome back, <span class="success-name" id="successName">Friend</span>! 🎉</h2>
+    <p>You've successfully logged in to Vertex Talent.</p>
+    <p style="font-size:14px;">Taking you to your dashboard…</p>
+
+    <div class="redirect-box">
+        <div class="spinner"></div>
+        <span>Redirecting in <span class="redirect-countdown" id="countdown">3</span> seconds</span>
+    </div>
+</div>
+<div class="progress-bar-bottom" id="progressBar" style="display:none;"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastMsg">Success</span>
+</div>
+
+<script>
+    /* ============ ELEMENT REFS ============ */
+    const successOverlay = document.getElementById('successOverlay');
+    const successName = document.getElementById('successName');
+    const countdownEl = document.getElementById('countdown');
+    const progressBar = document.getElementById('progressBar');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+
+    const pinLoginInputs = document.querySelectorAll('#pinLoginInputs .pin-digit');
+    const pinLoginErr = document.getElementById('pinLoginErr');
+    const pinSubmitBtn = document.getElementById('pinSubmitBtn');
+    const pinLoginForm = document.getElementById('pinLoginForm');
+
+    const emailLoginForm = document.getElementById('emailLoginForm');
+    const emailSubmitBtn = document.getElementById('emailSubmitBtn');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const togglePw = document.getElementById('togglePw');
+
+    /* ============ TOAST HELPER ============ */
+    let toastTimer;
+    function showToast(msg, type = 'success') {
+        clearTimeout(toastTimer);
+        toastMsg.textContent = msg;
+        toast.className = 'toast show ' + type;
+        toast.querySelector('i').className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    /* ============ TAB SWITCHER ============ */
+    function switchTab(tab) {
+        const tabPin = document.getElementById('tabPin');
+        const tabEmail = document.getElementById('tabEmail');
+        const pinArea = document.getElementById('pinLoginArea');
+        const emailArea = document.getElementById('emailLoginArea');
+
+        if (tab === 'pin') {
+            tabPin.classList.add('active');
+            tabEmail.classList.remove('active');
+            pinArea.classList.add('active');
+            emailArea.classList.remove('active');
+            setTimeout(() => pinLoginInputs[0].focus(), 100);
+        } else {
+            tabEmail.classList.add('active');
+            tabPin.classList.remove('active');
+            emailArea.classList.add('active');
+            pinArea.classList.remove('active');
+            setTimeout(() => loginEmail.focus(), 100);
+        }
+    }
+
+    /* ============ PIN INPUT LOGIC ============ */
+    function getPinValue() {
+        return Array.from(pinLoginInputs).map(i => i.value).join('');
+    }
+
+    function resetPinErrors() {
+        pinLoginInputs.forEach(i => i.classList.remove('error'));
+        pinLoginErr.classList.remove('show');
+    }
+
+    pinLoginInputs.forEach((input, idx) => {
+        input.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '');
+            if (e.target.value) {
+                e.target.classList.add('filled');
+                e.target.classList.remove('error');
+                if (idx < pinLoginInputs.length - 1) pinLoginInputs[idx + 1].focus();
+            } else {
+                e.target.classList.remove('filled');
+            }
+            // Auto-submit when 6 digits entered
+            if (getPinValue().length === 6) {
+                setTimeout(() => {
+                    pinLoginForm.dispatchEvent(new Event('submit', { cancelable: true }));
+                }, 150);
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !e.target.value && idx > 0) {
+                pinLoginInputs[idx - 1].focus();
+                pinLoginInputs[idx - 1].value = '';
+                pinLoginInputs[idx - 1].classList.remove('filled');
+            }
+            if (e.key === 'ArrowLeft' && idx > 0) pinLoginInputs[idx - 1].focus();
+            if (e.key === 'ArrowRight' && idx < pinLoginInputs.length - 1) pinLoginInputs[idx + 1].focus();
+        });
+
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+            if (!paste) return;
+            paste.split('').forEach((ch, i) => {
+                if (pinLoginInputs[i]) {
+                    pinLoginInputs[i].value = ch;
+                    pinLoginInputs[i].classList.add('filled');
+                }
+            });
+            const nextIdx = Math.min(paste.length, pinLoginInputs.length - 1);
+            pinLoginInputs[nextIdx].focus();
+            if (getPinValue().length === 6) {
+                setTimeout(() => {
+                    pinLoginForm.dispatchEvent(new Event('submit', { cancelable: true }));
+                }, 150);
+            }
+        });
+
+        input.addEventListener('focus', (e) => e.target.select());
+    });
+
+    /* ============ PIN SUBMIT ============ */
+    pinLoginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        resetPinErrors();
+
+        const pin = getPinValue();
+        if (pin.length !== 6) {
+            pinLoginErr.classList.add('show');
+            pinLoginInputs.forEach(i => { if (!i.value) i.classList.add('error'); });
+            showToast('Please enter your complete 6-digit PIN.', 'error');
+            return;
+        }
+
+        pinSubmitBtn.disabled = true;
+        pinSubmitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> <span>Verifying PIN…</span>';
+
+        try {
+            const res = await fetch('/api/login/pin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    pin: pin,
+                    remember: document.getElementById('rememberPin').checked
+                })
+            });
+
+            let data = {};
+            try { data = await res.json(); } catch (_) {}
+
+            if (!res.ok) {
+                throw new Error(data.message || 'Invalid PIN. Please try again.');
+            }
+
+            handleLoginSuccess(data);
+
+        } catch (err) {
+            console.error(err);
+            // Demo fallback: accept any 6-digit PIN when no backend
+            if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+                // Demo mode
+                const demoUser = JSON.parse(localStorage.getItem('vertexUser')) || { firstName: 'Friend' };
+                handleLoginSuccess({ user: demoUser, token: 'demo-token-' + Date.now() });
+            } else {
+                pinLoginInputs.forEach(i => i.classList.add('error'));
+                pinLoginErr.classList.add('show');
+                showToast(err.message, 'error');
+                pinSubmitBtn.disabled = false;
+                pinSubmitBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> <span>Login with PIN</span>';
+                setTimeout(() => {
+                    pinLoginInputs.forEach(i => { i.value = ''; i.classList.remove('filled', 'error'); });
+                    pinLoginInputs[0].focus();
+                }, 800);
+            }
+        }
+    });
+
+    /* ============ EMAIL LOGIN SUBMIT ============ */
+    emailLoginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Validate
+        const emailVal = loginEmail.value.trim();
+        const pwVal = loginPassword.value;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        let valid = true;
+
+        document.getElementById('err-loginEmail').classList.toggle('show', !emailRegex.test(emailVal));
+        loginEmail.classList.toggle('error', !emailRegex.test(emailVal));
+        if (!emailRegex.test(emailVal)) valid = false;
+
+        document.getElementById('err-loginPassword').classList.toggle('show', pwVal.length < 6);
+        loginPassword.classList.toggle('error', pwVal.length < 6);
+        if (pwVal.length < 6) valid = false;
+
+        if (!valid) {
+            showToast('Please fix the highlighted fields.', 'error');
+            return;
+        }
+
+        emailSubmitBtn.disabled = true;
+        emailSubmitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> <span>Signing in…</span>';
+
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: emailVal,
+                    password: pwVal,
+                    remember: document.getElementById('rememberEmail').checked
+                })
+            });
+
+            let data = {};
+            try { data = await res.json(); } catch (_) {}
+
+            if (!res.ok) {
+                throw new Error(data.message || 'Invalid email or password.');
+            }
+
+            handleLoginSuccess(data);
+
+        } catch (err) {
+            console.error(err);
+            // Demo fallback
+            if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+                const demoUser = JSON.parse(localStorage.getItem('vertexUser')) || { firstName: 'Friend' };
+                handleLoginSuccess({ user: demoUser, token: 'demo-token-' + Date.now() });
+            } else {
+                loginEmail.classList.add('error');
+                loginPassword.classList.add('error');
+                document.getElementById('err-loginEmail').classList.add('show');
+                document.getElementById('err-loginPassword').classList.add('show');
+                showToast(err.message, 'error');
+                emailSubmitBtn.disabled = false;
+                emailSubmitBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> <span>Login to Account</span>';
+            }
+        }
+    });
+
+    /* ============ SHARED SUCCESS HANDLER ============ */
+    function handleLoginSuccess(data) {
+        const user = data.user || JSON.parse(localStorage.getItem('vertexUser')) || { firstName: 'Friend' };
+        const token = data.token || 'demo-token-' + Date.now();
+
+        localStorage.setItem('vertexUser', JSON.stringify(user));
+        localStorage.setItem('vertexToken', token);
+
+        successName.textContent = user.firstName || 'Friend';
+        successOverlay.classList.add('active');
+        progressBar.style.display = 'block';
+        progressBar.style.animation = 'none';
+        void progressBar.offsetWidth;
+        progressBar.style.animation = 'fillProgress 3s linear forwards';
+
+        let seconds = 3;
+        countdownEl.textContent = seconds;
+        const timer = setInterval(() => {
+            seconds--;
+            countdownEl.textContent = seconds;
+            if (seconds <= 0) {
+                clearInterval(timer);
+                window.location.href = 'dashboard.html';
+            }
+        }, 1000);
+
+        showToast('Login successful! Welcome back.', 'success');
+    }
+
+    /* ============ PASSWORD TOGGLE ============ */
+    togglePw.addEventListener('click', () => {
+        const isPw = loginPassword.type === 'password';
+        loginPassword.type = isPw ? 'text' : 'password';
+        togglePw.innerHTML = isPw ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+        togglePw.setAttribute('aria-label', isPw ? 'Hide password' : 'Show password');
+    });
+
+    /* ============ INIT ============ */
+    // Check for saved email and pre-fill
+    const savedEmail = localStorage.getItem('vertexEmail');
+    if (savedEmail) {
+        loginEmail.value = savedEmail;
+        document.getElementById('rememberEmail').checked = true;
+    }
+
+    // Focus first PIN digit on load
+    setTimeout(() => pinLoginInputs[0].focus(), 300);
+</script>
+</body>
+</html>
