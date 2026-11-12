@@ -1,0 +1,266 @@
+<!-- ============================================================
+     ABOUT.HTML
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>About Us | Vertex Talent — Our Story</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #0F2B46; --primary-dark: #081C2F; --primary-soft: #244B6B;
+            --secondary: #00A6A6; --secondary-glow: #2DD4BF; --accent: #FF7B54;
+            --gold: #FFC857; --dark: #0A1A2B; --gray: #4F6F8F; --white: #FFFFFF;
+            --danger: #ef4444; --success: #10b981; --whatsapp: #25D366;
+            --shadow-soft: 0 20px 35px -12px rgba(0,0,0,0.06);
+            --shadow-bold: 0 28px 45px -12px rgba(0,0,0,0.18);
+        }
+        body { font-family: 'Inter', sans-serif; background: #F7FAFF; color: var(--dark); line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+
+        .dash-header { background: rgba(255,255,255,0.95); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,166,166,0.15); position: sticky; top: 0; z-index: 1000; padding: 14px 0; }
+        .dash-header .container { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; max-width: 1400px; }
+        .dash-logo h1 { font-size: 22px; font-weight: 800; background: linear-gradient(125deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; display: flex; align-items: center; gap: 8px; }
+        .dash-logo span { font-size: 10.5px; color: var(--gray); font-weight: 500; display: block; }
+        .header-links { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .header-links a { text-decoration: none; color: var(--gray); font-size: 13.5px; font-weight: 500; padding: 8px 16px; border-radius: 50px; transition: 0.2s; }
+        .header-links a:hover, .header-links a.active { background: var(--secondary); color: white; }
+        .user-chip { display: flex; align-items: center; gap: 10px; padding: 5px 14px 5px 5px; border-radius: 50px; background: white; border: 1.5px solid #e2e8f0; cursor: pointer; text-decoration: none; color: var(--dark); transition: 0.2s; }
+        .user-chip:hover { border-color: var(--secondary); }
+        .user-chip img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 2px solid var(--secondary); }
+        .user-chip strong { font-size: 13px; color: var(--primary); }
+
+        /* Hero */
+        .about-hero {
+            background: linear-gradient(120deg, rgba(15,43,70,0.94), rgba(8,28,47,0.96)),
+                url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1400');
+            background-size: cover; background-position: center;
+            padding: 100px 0 90px; color: white; text-align: center;
+        }
+        .about-hero h1 { font-size: 52px; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 16px; }
+        .about-hero h1 span { color: var(--secondary-glow); }
+        .about-hero p { font-size: 18px; color: rgba(255,255,255,0.8); max-width: 620px; margin: 0 auto; }
+
+        /* Mission */
+        .mission-section { padding: 80px 0; }
+        .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .mission-text .tag { display: inline-block; padding: 6px 18px; background: rgba(0,166,166,0.1); color: var(--secondary); font-weight: 600; font-size: 13px; border-radius: 50px; margin-bottom: 16px; }
+        .mission-text h2 { font-size: 40px; font-weight: 800; color: var(--primary); letter-spacing: -1px; margin-bottom: 18px; line-height: 1.15; }
+        .mission-text h2 span { color: var(--secondary); }
+        .mission-text p { font-size: 15.5px; color: var(--gray); margin-bottom: 16px; }
+        .mission-img { border-radius: 28px; overflow: hidden; box-shadow: var(--shadow-bold); }
+        .mission-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        /* Stats */
+        .about-stats { background: linear-gradient(120deg, var(--primary), var(--primary-soft)); padding: 60px 0; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; text-align: center; }
+        .about-stat .num { font-size: 44px; font-weight: 800; color: var(--gold); line-height: 1; }
+        .about-stat .lbl { font-size: 14px; color: rgba(255,255,255,0.8); margin-top: 8px; }
+
+        /* Values */
+        .values-section { padding: 80px 0; background: #FBFDFF; }
+        .section-heading { text-align: center; margin-bottom: 50px; }
+        .section-heading h2 { font-size: 38px; font-weight: 800; color: var(--primary); letter-spacing: -0.8px; margin-bottom: 10px; }
+        .section-heading p { font-size: 16px; color: var(--gray); max-width: 550px; margin: 0 auto; }
+        .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+        .value-card { background: white; border-radius: 24px; padding: 36px 28px; border: 1.5px solid #e8eef5; text-align: center; transition: 0.3s; }
+        .value-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-soft); border-color: rgba(0,166,166,0.3); }
+        .value-icon { width: 68px; height: 68px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 20px; }
+        .value-icon.v1 { background: rgba(0,166,166,0.12); color: var(--secondary); }
+        .value-icon.v2 { background: rgba(255,123,84,0.12); color: var(--accent); }
+        .value-icon.v3 { background: rgba(255,200,87,0.18); color: #d97706; }
+        .value-card h3 { font-size: 18px; font-weight: 800; color: var(--primary); margin-bottom: 10px; }
+        .value-card p { font-size: 14px; color: var(--gray); }
+
+        /* Team */
+        .team-section { padding: 80px 0; background: #F7FAFF; }
+        .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+        .team-card { background: white; border-radius: 24px; overflow: hidden; border: 1.5px solid #e8eef5; transition: 0.3s; }
+        .team-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-soft); }
+        .team-img { width: 100%; height: 260px; object-fit: cover; }
+        .team-info { padding: 24px; text-align: center; }
+        .team-info h3 { font-size: 17px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+        .team-info .role { font-size: 13px; color: var(--secondary); font-weight: 600; margin-bottom: 10px; }
+        .team-info p { font-size: 13px; color: var(--gray); }
+
+        /* CTA */
+        .about-cta { background: linear-gradient(120deg, var(--primary), var(--primary-soft)); padding: 70px 0; text-align: center; color: white; }
+        .about-cta h2 { font-size: 36px; font-weight: 800; margin-bottom: 14px; }
+        .about-cta p { font-size: 16px; color: rgba(255,255,255,0.8); margin-bottom: 28px; }
+        .about-cta .btn-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .about-cta a { padding: 14px 32px; border-radius: 50px; font-weight: 700; text-decoration: none; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; transition: 0.25s; }
+        .about-cta .btn-primary { background: var(--secondary); color: white; box-shadow: 0 8px 18px rgba(0,166,166,0.3); }
+        .about-cta .btn-primary:hover { background: var(--accent); transform: translateY(-3px); }
+        .about-cta .btn-outline { border: 2px solid white; color: white; }
+        .about-cta .btn-outline:hover { background: white; color: var(--primary); }
+
+        /* Footer */
+        .simple-footer { background: var(--primary-dark); padding: 30px 0; text-align: center; color: rgba(255,255,255,0.5); font-size: 13px; }
+
+        .whatsapp-float { position: fixed; bottom: 28px; right: 28px; z-index: 999; }
+        .whatsapp-btn { width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, #25D366, #128C7E); display: flex; align-items: center; justify-content: center; color: white; font-size: 27px; text-decoration: none; box-shadow: 0 10px 30px rgba(37,211,102,0.4); border: 3px solid white; transition: 0.3s; }
+        .whatsapp-btn:hover { transform: scale(1.1); }
+
+        @media (max-width: 992px) {
+            .mission-grid { grid-template-columns: 1fr; gap: 40px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .values-grid, .team-grid { grid-template-columns: 1fr; }
+            .about-hero h1 { font-size: 36px; }
+        }
+        @media (max-width: 768px) {
+            .container { padding: 0 18px; }
+            .mission-text h2 { font-size: 30px; }
+            .header-links a:not(.user-chip) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="dash-header">
+    <div class="container">
+        <div class="dash-logo">
+            <h1><i class="fas fa-bolt"></i> Vertex Talent</h1>
+            <span>UK & GLOBAL · ELITE RECRUITMENT</span>
+        </div>
+        <div class="header-links">
+            <a href="dashboard.html"><i class="fas fa-house"></i> Dashboard</a>
+            <a href="jobs.html"><i class="fas fa-briefcase"></i> Jobs</a>
+            <a href="about.html" class="active"><i class="fas fa-circle-info"></i> About</a>
+            <a href="chat.html"><i class="fas fa-comments"></i> Chat</a>
+            <a href="dashboard.html" class="user-chip">
+                <img id="userChipAvatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" alt="User">
+                <strong id="userChipName">Loading…</strong>
+            </a>
+        </div>
+    </div>
+</header>
+
+<section class="about-hero">
+    <div class="container">
+        <h1>We connect <span>ambition</span> with opportunity</h1>
+        <p>Since 2012, Vertex Talent has been the UK's trusted recruitment partner — matching exceptional people with outstanding companies across every industry.</p>
+    </div>
+</section>
+
+<section class="mission-section">
+    <div class="container">
+        <div class="mission-grid">
+            <div class="mission-text">
+                <span class="tag">OUR MISSION</span>
+                <h2>Building careers, <span>one match</span> at a time.</h2>
+                <p>We believe the right job can transform a life — and the right person can transform a business. That's why we combine cutting-edge technology with genuine human expertise to make every placement count.</p>
+                <p>From warehouse teams to boardroom executives, we've helped over 12,000 professionals find their next opportunity and supported 1,800+ UK businesses in building world-class teams.</p>
+            </div>
+            <div class="mission-img">
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800" alt="Our team at work">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-stats">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="about-stat"><div class="num">12k+</div><div class="lbl">Professionals Placed</div></div>
+            <div class="about-stat"><div class="num">1,800</div><div class="lbl">UK Businesses Served</div></div>
+            <div class="about-stat"><div class="num">96%</div><div class="lbl">Client Retention</div></div>
+            <div class="about-stat"><div class="num">14</div><div class="lbl">Years of Excellence</div></div>
+        </div>
+    </div>
+</section>
+
+<section class="values-section">
+    <div class="container">
+        <div class="section-heading">
+            <h2>What we stand for</h2>
+            <p>Our values shape every placement, every conversation, and every partnership we build.</p>
+        </div>
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon v1"><i class="fas fa-handshake"></i></div>
+                <h3>People First</h3>
+                <p>We treat every candidate and client as a long-term partner, not a transaction. Your success is our success.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon v2"><i class="fas fa-bolt"></i></div>
+                <h3>Speed & Precision</h3>
+                <p>Our AI-powered matching and dedicated specialists deliver shortlists in hours, not weeks — without compromising quality.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon v3"><i class="fas fa-shield-halved"></i></div>
+                <h3>Trust & Transparency</h3>
+                <p>Clear communication, GDPR-compliant data handling, and no hidden fees. What you see is what you get.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="team-section">
+    <div class="container">
+        <div class="section-heading">
+            <h2>Meet the leadership</h2>
+            <p>A team of seasoned recruitment experts dedicated to your success.</p>
+        </div>
+        <div class="team-grid">
+            <div class="team-card">
+                <img class="team-img" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500" alt="James Carter">
+                <div class="team-info">
+                    <h3>James Carter</h3>
+                    <div class="role">Founder & CEO</div>
+                    <p>20+ years in UK recruitment. Former MD at a FTSE 250 staffing group.</p>
+                </div>
+            </div>
+            <div class="team-card">
+                <img class="team-img" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500" alt="Priya Sharma">
+                <div class="team-info">
+                    <h3>Priya Sharma</h3>
+                    <div class="role">Head of Talent</div>
+                    <p>Executive search specialist with a track record of 500+ C-suite placements.</p>
+                </div>
+            </div>
+            <div class="team-card">
+                <img class="team-img" src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=500" alt="Michael Osei">
+                <div class="team-info">
+                    <h3>Michael Osei</h3>
+                    <div class="role">Operations Director</div>
+                    <p>Leads our temp & contract division, placing 3,000+ workers annually across the UK.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-cta">
+    <div class="container">
+        <h2>Ready to work with us?</h2>
+        <p>Whether you're hiring or job-hunting, we'd love to hear from you.</p>
+        <div class="btn-group">
+            <a href="jobs.html" class="btn-primary"><i class="fas fa-magnifying-glass"></i> Find a Job</a>
+            <a href="https://wa.me/447536578775?text=Hi%20Vertex%20Talent%2C%20I%27d%20like%20to%20discuss%20recruitment!" target="_blank" class="btn-outline"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
+        </div>
+    </div>
+</section>
+
+<footer class="simple-footer">© 2026 Vertex Talent Ltd. All rights reserved. Made with ❤️ in the UK.</footer>
+
+<div class="whatsapp-float">
+    <a href="https://wa.me/447536578775" target="_blank" class="whatsapp-btn" title="WhatsApp Support"><i class="fab fa-whatsapp"></i></a>
+</div>
+
+<script>
+    try {
+        const user = JSON.parse(localStorage.getItem('vertexUser')) || {};
+        const name = (user.firstName || 'Friend') + (user.lastName ? ' ' + user.lastName : '');
+        const avatar = user.avatarUrl || user.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100';
+        document.getElementById('userChipName').textContent = name;
+        document.getElementById('userChipAvatar').src = avatar;
+    } catch (e) {}
+</script>
+</body>
+</html>
